@@ -3,8 +3,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "كلمة خداع",
-  description: "لعبة الـImposter اللفظية",
+  title: "L3ba",
+  description: "",
 };
 
 export default function RootLayout({

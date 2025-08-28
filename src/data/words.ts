@@ -16,6 +16,24 @@ export const categories = {
   'مدن مغربية': ['كازابلانكا', 'مراكش', 'فاس', 'الرباط', 'طنجة', 'أكادير', 'مكناس', 'وجدة', 'تطوان', 'شفشاون'],
 };
 
+export const categoryEmojis: Record<Category, string> = {
+  'مأكولات': '🍽️',
+  'حيوانات': '🐾',
+  'مهن': '👨‍💼',
+  'أماكن': '🏛️',
+  'أفلام': '🎬',
+  'أغراض': '📦',
+  'رياضة': '⚽',
+  'مشاهير': '⭐',
+  'أدوات منزلية': '🏠',
+  'عربانات': '🚗',
+  'نباتات': '🌿',
+  'تكنولوجيا': '💻',
+  'هوايات': '🎨',
+  'تقاليد مغربية': '🕌',
+  'مدن مغربية': '🏙️',
+};
+
 export type Category = keyof typeof categories;
 
 export const categoryNames = Object.keys(categories) as Category[];

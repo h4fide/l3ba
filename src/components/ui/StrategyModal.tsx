@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 
 interface StrategyModalProps {
@@ -19,7 +18,7 @@ export default function StrategyModal({ isOpen, onClose }: StrategyModalProps) {
       <DialogContent className="font-body">
         <DialogHeader>
           <DialogTitle>نصائح اللعبة</DialogTitle>
-          <DialogDescription as="div" className="space-y-4 pt-4 text-right">
+          <div className="space-y-4 pt-4 text-right text-sm text-muted-foreground">
             <div>
               <h3 className="font-bold text-primary">للاعبين العاديين:</h3>
               <p>حاول تخلي النقاش واضح باش زملاءك يعرفوك ولكن موش واضح بزاف باش ما يعرفش الـImposter الكلمة.</p>
@@ -36,7 +35,7 @@ export default function StrategyModal({ isOpen, onClose }: StrategyModalProps) {
               <h3 className="font-bold text-primary">التمويه:</h3>
               <p>الـImposter يقدر يقلد النقاش ديال الآخرين بلا ما يكون واضح بزاف. حاول تلقط لي كيدير هاكا.</p>
             </div>
-          </DialogDescription>
+          </div>
         </DialogHeader>
       </DialogContent>
     </Dialog>

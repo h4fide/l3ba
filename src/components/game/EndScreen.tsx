@@ -6,7 +6,7 @@ import { Confetti } from "@/components/ui/Confetti";
 import { Trophy, ShieldAlert } from "lucide-react";
 
 export default function EndScreen() {
-  const { secretWord, imposterIndex, restartGame } = useGame();
+  const { secretWord, imposterIndex, restartGame, players } = useGame();
 
   return (
     <div className="flex flex-col items-center justify-center text-center">
@@ -26,7 +26,7 @@ export default function EndScreen() {
             <p className="text-lg text-muted-foreground">الـImposter هو</p>
             <div className="flex items-center justify-center gap-2">
                 <ShieldAlert className="w-8 h-8 text-destructive"/>
-                <p className="text-3xl font-bold text-destructive">اللاعب {imposterIndex + 1}</p>
+                <p className="text-3xl font-bold text-destructive">{players[imposterIndex]}</p>
             </div>
         </div>
       </div>

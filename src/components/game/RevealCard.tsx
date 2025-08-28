@@ -6,8 +6,12 @@ import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Eye, VenetianMask } from "lucide-react";
 
+interface RevealCardProps {
+  onRevealed: () => void;
+}
+
 export default function RevealCard({ onRevealed }: RevealCardProps) {
-  const { secretWord, category, imposterIndex, currentPlayerIndex } = useGame();
+  const { secretWord, category, imposterIndex, currentPlayerIndex, imposterHint } = useGame();
   const [isRevealed, setIsRevealed] = useState(false);
   const [hasBeenRevealed, setHasBeenRevealed] = useState(false);
   const isImposter = currentPlayerIndex === imposterIndex;
@@ -37,6 +41,11 @@ export default function RevealCard({ onRevealed }: RevealCardProps) {
                   <VenetianMask className="w-20 h-20 text-destructive mx-auto mb-4" />
                   <h3 className="text-3xl font-bold text-destructive">أنت الـImposter!</h3>
                   <p className="text-xl mt-2 text-muted-foreground">الفئة هي: <span className="font-bold text-foreground">{category}</span></p>
+                  {imposterHint && (
+                    <p className="text-lg mt-2 text-yellow-600">
+                      تلميح: الكلمة تبدأ بحرف "<span className="font-bold">{secretWord.charAt(0)}</span>"
+                    </p>
+                  )}
                 </>
               ) : (
                 <>
