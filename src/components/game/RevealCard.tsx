@@ -32,6 +32,12 @@ export default function RevealCard() {
   const handleReveal = () => setRevealed(true);
   const handleNext = () => {
     setRevealed(false);
+    setHoldProgress(0);
+    setIsHolding(false);
+    if (holdIntervalRef.current) {
+      clearInterval(holdIntervalRef.current);
+      holdIntervalRef.current = null;
+    }
     nextPlayer();
   };
 
