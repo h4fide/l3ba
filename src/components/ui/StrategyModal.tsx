@@ -18,23 +18,23 @@ export default function StrategyModal({ isOpen, onClose }: StrategyModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="font-body">
         <DialogHeader>
-          <DialogTitle>نصائح اللعبة</DialogTitle>
-          <DialogDescription as="div" className="space-y-4 pt-4 text-right">
+          <DialogTitle>Game Tips</DialogTitle>
+          <DialogDescription as="div" className="space-y-4 pt-4 text-left">
             <div>
-              <h3 className="font-bold text-primary">للاعبين العاديين:</h3>
-              <p>حاول تخلي النقاش واضح باش زملاءك يعرفوك ولكن موش واضح بزاف باش ما يعرفش الـImposter الكلمة.</p>
+              <h3 className="font-bold text-primary">For Regular Players:</h3>
+              <p>Try to make the discussion clear enough for your teammates to recognize you, but not so obvious that the Imposter can guess the word.</p>
             </div>
             <div>
-              <h3 className="font-bold text-primary">لـ Imposter:</h3>
-              <p>حاول تبقا هادئ وتشارك فالنقاش بطريقة عادية. استعمل أجوبة عامة واستمع مزيان للآخرين باش تقلد الأفكار ديالهم.</p>
+              <h3 className="font-bold text-primary">For the Imposter:</h3>
+              <p>Try to stay calm and participate in the discussion normally. Use general answers and listen carefully to others to mimic their ideas.</p>
             </div>
             <div>
-              <h3 className="font-bold text-primary">نصيحة عامة:</h3>
-              <p>دير بالك من التردد أو الإجابات العامة بزاف فالنقاش. هادو علامات ممكن تكشف الـImposter.</p>
+              <h3 className="font-bold text-primary">General Advice:</h3>
+              <p>Watch out for hesitation or overly general answers in the discussion. These could be signs that reveal the Imposter.</p>
             </div>
              <div>
-              <h3 className="font-bold text-primary">التمويه:</h3>
-              <p>الـImposter يقدر يقلد النقاش ديال الآخرين بلا ما يكون واضح بزاف. حاول تلقط لي كيدير هاكا.</p>
+              <h3 className="font-bold text-primary">Bluffing:</h3>
+              <p>The Imposter might try to mimic others' discussions without being too obvious. Try to catch who is doing this.</p>
             </div>
           </DialogDescription>
         </DialogHeader>

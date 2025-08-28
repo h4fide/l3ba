@@ -6,6 +6,10 @@ import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Eye, VenetianMask } from "lucide-react";
 
+interface RevealCardProps {
+    onRevealed: () => void;
+}
+
 export default function RevealCard({ onRevealed }: RevealCardProps) {
   const { secretWord, category, imposterIndex, currentPlayerIndex } = useGame();
   const [isRevealed, setIsRevealed] = useState(false);
@@ -35,12 +39,12 @@ export default function RevealCard({ onRevealed }: RevealCardProps) {
               {isImposter ? (
                 <>
                   <VenetianMask className="w-20 h-20 text-destructive mx-auto mb-4" />
-                  <h3 className="text-3xl font-bold text-destructive">أنت الـImposter!</h3>
-                  <p className="text-xl mt-2 text-muted-foreground">الفئة هي: <span className="font-bold text-foreground">{category}</span></p>
+                  <h3 className="text-3xl font-bold text-destructive">You are the Imposter!</h3>
+                  <p className="text-xl mt-2 text-muted-foreground">The category is: <span className="font-bold text-foreground">{category}</span></p>
                 </>
               ) : (
                 <>
-                  <h3 className="text-xl text-muted-foreground">الكلمة السرية هي:</h3>
+                  <h3 className="text-xl text-muted-foreground">The secret word is:</h3>
                   <p className="text-5xl font-bold text-primary mt-2">{secretWord}</p>
                 </>
               )}
@@ -54,7 +58,7 @@ export default function RevealCard({ onRevealed }: RevealCardProps) {
                 transition={{ duration: 0.2 }}
             >
                 <p className="text-2xl text-muted-foreground">
-                    {hasBeenRevealed ? "انظر مرة أخرى" : "هل أنت مستعد؟"}
+                    {hasBeenRevealed ? "Look again" : "Are you ready?"}
                 </p>
             </motion.div>
           )}
@@ -71,12 +75,12 @@ export default function RevealCard({ onRevealed }: RevealCardProps) {
           size="lg"
         >
           <Eye className="mr-2" />
-          اضغط لكشف الدور
+          Press to Reveal
         </Button>
 
         {hasBeenRevealed && (
           <Button onClick={onRevealed} className="w-full" variant="secondary">
-            اللاعب التالي
+            Next Player
           </Button>
         )}
       </div>

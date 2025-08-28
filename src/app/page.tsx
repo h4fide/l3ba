@@ -34,9 +34,9 @@ function GameView() {
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center p-4">
       <header className="w-full text-center my-8">
         <h1 className="text-6xl md:text-7xl font-bold text-primary font-headline tracking-tighter">
-          كلمة خداع
+          Word Deception
         </h1>
-        <p className="text-muted-foreground mt-2 text-lg">لعبة الخداع والملاحظة</p>
+        <p className="text-muted-foreground mt-2 text-lg">A game of deception and observation</p>
       </header>
       
       <Card className="w-full shadow-2xl border-primary/20 border-2 bg-card/80 backdrop-blur-lg">
@@ -58,7 +58,7 @@ function GameView() {
 
       {gameState === 'setup' && (
         <Button variant="link" onClick={() => setStrategyModalOpen(true)} className="mt-8 text-lg">
-          كيف تلعب؟
+          How to Play?
         </Button>
       )}
 

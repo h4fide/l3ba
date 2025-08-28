@@ -19,10 +19,10 @@ import { Users, List, Play } from "lucide-react";
 
 const setupSchema = z.object({
   playerCount: z.coerce
-    .number({ invalid_type_error: "يجب أن يكون رقما" })
-    .min(3, { message: "3 لاعبين على الأقل" })
-    .max(20, { message: "20 لاعبًا كحد أقصى" }),
-  category: z.string({ required_error: "الرجاء اختيار فئة" }).min(1, "الرجاء اختيار فئة"),
+    .number({ invalid_type_error: "Must be a number" })
+    .min(3, { message: "At least 3 players" })
+    .max(20, { message: "Maximum of 20 players" }),
+  category: z.string({ required_error: "Please select a category" }).min(1, "Please select a category"),
 });
 
 type SetupFormValues = z.infer<typeof setupSchema>;
@@ -44,7 +44,7 @@ export default function Setup() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <h2 className="text-3xl font-bold mb-8 text-center">إعدادات اللعبة</h2>
+      <h2 className="text-3xl font-bold mb-8 text-center">Game Setup</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <FormField
@@ -54,7 +54,7 @@ export default function Setup() {
               <FormItem>
                 <FormLabel className="flex items-center gap-2 text-lg">
                   <Users className="w-6 h-6" />
-                  <span>عدد اللاعبين</span>
+                  <span>Number of Players</span>
                 </FormLabel>
                 <FormControl>
                   <Input type="number" {...field} className="text-center text-xl h-14" />
@@ -71,12 +71,12 @@ export default function Setup() {
               <FormItem>
                 <FormLabel className="flex items-center gap-2 text-lg">
                   <List className="w-6 h-6" />
-                  <span>الفئة</span>
+                  <span>Category</span>
                 </FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className="h-14 text-xl">
-                      <SelectValue placeholder="اختر فئة..." />
+                      <SelectValue placeholder="Choose a category..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -92,8 +92,8 @@ export default function Setup() {
             )}
           />
           <Button type="submit" className="w-full text-xl py-8" size="lg">
-            <Play className="w-6 h-6 ml-2"/>
-            ابدأ اللعبة
+            <Play className="w-6 h-6 mr-2"/>
+            Start Game
           </Button>
         </form>
       </Form>
