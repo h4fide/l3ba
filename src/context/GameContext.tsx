@@ -20,6 +20,7 @@ interface GameContextType {
   imposterCount: number;
   imposterHint: boolean;
   setImposterHint: (val: boolean) => void;
+  randomizeSecretWord: (categories?: string[]) => void;
   setupGame: (players: number, selectedCategories: string[], imposterCount: number, imposterHint: boolean) => void;
   nextPlayer: () => void;
   restartGame: () => void;
@@ -59,27 +60,34 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [imposterCount, setImposterCount] = useState(1);
   const [imposterHint, setImposterHint] = useState(false);
 
-  const setupGame = (players: number, selectedCategories: string[], impCount: number, hint: boolean) => {
-    if (selectedCategories.length === 0) return;
-    
-    // Randomly select a category from the selected categories
-    const randomCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
+  // Pick a random category + word from either the provided categories or the currently
+  // selectedCategories state. Exposed so the UI can re-randomize the secret word on demand.
+  const randomizeSecretWord = (cats?: string[]) => {
+    const poolCategories = cats && cats.length > 0 ? cats : selectedCategories;
+    if (!poolCategories || poolCategories.length === 0) {
+      console.error('No categories available to randomize secret word');
+      return;
+    }
+    const randomCategory = poolCategories[Math.floor(Math.random() * poolCategories.length)];
     const wordPool = categories[randomCategory as Category] as Word[];
-    
     if (!wordPool || wordPool.length === 0) {
       console.error('No words available for category:', randomCategory);
       return;
     }
-    
     const randomWordObj = wordPool[Math.floor(Math.random() * wordPool.length)];
-    const randomImposter = Math.floor(Math.random() * players);
-    const randomFirstPlayer = Math.floor(Math.random() * players);
-    
-    setPlayerCount(players);
-    setSelectedCategories(selectedCategories);
     setCategory(randomCategory);
     setSecretWord(randomWordObj.word);
     setHint(randomWordObj.hint);
+  };
+
+  const setupGame = (players: number, selectedCategories: string[], impCount: number, hint: boolean) => {
+    if (selectedCategories.length === 0) return;
+  // Randomize secret word (and category/hint) from the selected categories
+  randomizeSecretWord(selectedCategories);
+  const randomImposter = Math.floor(Math.random() * players);
+  const randomFirstPlayer = Math.floor(Math.random() * players);
+    setPlayerCount(players);
+    setSelectedCategories(selectedCategories);
     setImposterIndex(randomImposter);
     setFirstPlayerIndex(randomFirstPlayer);
     setCurrentPlayerIndex(0);
@@ -151,6 +159,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     imposterCount,
     imposterHint,
   setImposterHint,
+  randomizeSecretWord,
     setupGame,
     nextPlayer,
     restartGame,
