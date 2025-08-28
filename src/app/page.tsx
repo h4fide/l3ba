@@ -32,12 +32,13 @@ function GameView() {
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center p-2 sm:p-4">
-      <header className="w-full text-center my-6">
-        <h1 className="text-5xl md:text-6xl font-bold text-primary font-headline">كلمة خداع</h1>
+      <header className="w-full text-center my-8">
+        <h1 className="text-5xl md:text-6xl font-bold text-primary font-headline tracking-tight">كلمة خداع</h1>
+        <p className="text-muted-foreground mt-2 text-lg">لعبة الخداع والملاحظة</p>
       </header>
       
-      <Card className="w-full shadow-2xl bg-card">
-        <CardContent className="p-4 sm:p-6 min-h-[24rem] flex items-center justify-center">
+      <Card className="w-full shadow-lg border-none bg-card/80 backdrop-blur-sm">
+        <CardContent className="p-4 sm:p-6 min-h-[26rem] flex items-center justify-center">
             <AnimatePresence mode="wait">
                  <motion.div
                     key={gameState}
@@ -54,8 +55,8 @@ function GameView() {
       </Card>
 
       {gameState === 'setup' && (
-        <Button variant="link" onClick={() => setStrategyModalOpen(true)} className="mt-4 text-lg">
-          نصائح اللعبة
+        <Button variant="link" onClick={() => setStrategyModalOpen(true)} className="mt-6 text-base">
+          كيف تلعب؟
         </Button>
       )}
 
@@ -68,6 +69,7 @@ export default function Home() {
   return (
     <GameProvider>
       <main className="flex items-center justify-center min-h-screen bg-background font-body">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-secondary/20 -z-10"></div>
         <GameView />
       </main>
     </GameProvider>
