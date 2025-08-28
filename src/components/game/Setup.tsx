@@ -15,14 +15,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Users, List } from "lucide-react";
+import { Users, List, Play } from "lucide-react";
 
 const setupSchema = z.object({
   playerCount: z.coerce
-    .number({ invalid_type_error: "خاص يكون رقم" })
-    .min(3, { message: "خاص يكونو 3 اللاعبين على الأقل" })
-    .max(20, { message: "خاص يكونو 20 لاعب كحد أقصى" }),
-  category: z.string({ required_error: "خاص تختار فئة" }).min(1, "خاص تختار فئة"),
+    .number({ invalid_type_error: "يجب أن يكون رقما" })
+    .min(3, { message: "3 لاعبين على الأقل" })
+    .max(20, { message: "20 لاعبًا كحد أقصى" }),
+  category: z.string({ required_error: "الرجاء اختيار فئة" }).min(1, "الرجاء اختيار فئة"),
 });
 
 type SetupFormValues = z.infer<typeof setupSchema>;
@@ -44,20 +44,20 @@ export default function Setup() {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-6 text-center">إعدادات اللعبة</h2>
+      <h2 className="text-3xl font-bold mb-8 text-center">إعدادات اللعبة</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <FormField
             control={form.control}
             name="playerCount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center gap-2 text-base">
-                  <Users className="w-5 h-5" />
+                <FormLabel className="flex items-center gap-2 text-lg">
+                  <Users className="w-6 h-6" />
                   <span>عدد اللاعبين</span>
                 </FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} className="text-center text-lg h-12" />
+                  <Input type="number" {...field} className="text-center text-xl h-14" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -69,14 +69,14 @@ export default function Setup() {
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center gap-2 text-base">
-                  <List className="w-5 h-5" />
+                <FormLabel className="flex items-center gap-2 text-lg">
+                  <List className="w-6 h-6" />
                   <span>الفئة</span>
                 </FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="h-12 text-lg">
-                      <SelectValue placeholder="اختار فئة..." />
+                    <SelectTrigger className="h-14 text-xl">
+                      <SelectValue placeholder="اختر فئة..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -91,8 +91,9 @@ export default function Setup() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full text-lg py-7" size="lg">
-            بدا اللعبة
+          <Button type="submit" className="w-full text-xl py-8" size="lg">
+            <Play className="w-6 h-6 ml-2"/>
+            ابدأ اللعبة
           </Button>
         </form>
       </Form>

@@ -4,10 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
-
-interface RevealCardProps {
-  onRevealed: () => void;
-}
+import { Eye, VenetianMask } from "lucide-react";
 
 export default function RevealCard({ onRevealed }: RevealCardProps) {
   const { secretWord, category, imposterIndex, currentPlayerIndex } = useGame();
@@ -23,49 +20,63 @@ export default function RevealCard({ onRevealed }: RevealCardProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center text-center h-64">
-      <AnimatePresence>
-        {isRevealed ? (
-          <motion.div
-            key="role"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="text-center"
-          >
-            {isImposter ? (
-              <>
-                <h3 className="text-3xl font-bold text-destructive">نتا الـImposter!</h3>
-                <p className="text-xl mt-2">الفئة هي: <span className="font-bold">{category}</span></p>
-              </>
-            ) : (
-              <>
-                <h3 className="text-xl">الكلمة السرية هي:</h3>
-                <p className="text-4xl font-bold text-primary mt-2">{secretWord}</p>
-              </>
-            )}
-          </motion.div>
-        ) : (
-          <p className="text-2xl text-muted-foreground">
-            {hasBeenRevealed ? "شوف مرة أخرى" : "مستعد؟"}
-          </p>
-        )}
-      </AnimatePresence>
+    <div className="flex flex-col items-center justify-center text-center h-[24rem]">
+      <div className="flex-grow flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          {isRevealed ? (
+            <motion.div
+              key="role"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20, position: 'absolute' }}
+              transition={{ duration: 0.2 }}
+              className="text-center"
+            >
+              {isImposter ? (
+                <>
+                  <VenetianMask className="w-20 h-20 text-destructive mx-auto mb-4" />
+                  <h3 className="text-3xl font-bold text-destructive">أنت الـImposter!</h3>
+                  <p className="text-xl mt-2 text-muted-foreground">الفئة هي: <span className="font-bold text-foreground">{category}</span></p>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-xl text-muted-foreground">الكلمة السرية هي:</h3>
+                  <p className="text-5xl font-bold text-primary mt-2">{secretWord}</p>
+                </>
+              )}
+            </motion.div>
+          ) : (
+            <motion.div
+                key="placeholder"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, position: 'absolute' }}
+                transition={{ duration: 0.2 }}
+            >
+                <p className="text-2xl text-muted-foreground">
+                    {hasBeenRevealed ? "انظر مرة أخرى" : "هل أنت مستعد؟"}
+                </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <div className="mt-8 flex flex-col items-center gap-4 w-full">
         <Button
-          className="w-full h-20 text-2xl bg-primary hover:bg-primary/90 active:bg-primary/80"
+          className="w-full h-24 text-2xl"
           onMouseDown={() => handleReveal(true)}
           onMouseUp={() => handleReveal(false)}
           onTouchStart={() => handleReveal(true)}
           onTouchEnd={() => handleReveal(false)}
+          size="lg"
         >
-          شد باش تشوف
+          <Eye className="mr-2" />
+          اضغط لكشف الدور
         </Button>
 
         {hasBeenRevealed && (
           <Button onClick={onRevealed} className="w-full" variant="secondary">
-            التالي
+            اللاعب التالي
           </Button>
         )}
       </div>
