@@ -11,8 +11,7 @@ import EditPlayersModal from "./EditPlayersModal";
 import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
 export default function Setup() {
-  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint } = useGame();
-  const [imposterCount, setImposterCount] = useState(1);
+  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount } = useGame();
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState(false);
   const [isImposterSheetOpen, setIsImposterSheetOpen] = useState(false);
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);

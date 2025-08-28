@@ -18,6 +18,7 @@ interface GameContextType {
   currentPlayerIndex: number;
   firstPlayerIndex: number;
   imposterCount: number;
+  setImposterCount: (n: number) => void;
   imposterHint: boolean;
   setImposterHint: (val: boolean) => void;
   randomizeSecretWord: (categories?: string[]) => void;
@@ -53,6 +54,25 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const rawCats = localStorage.getItem('l3ba_selectedCategories');
       if (rawCats) {
         setSelectedCategories(JSON.parse(rawCats) as string[]);
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    try {
+      const rawImpCount = localStorage.getItem('l3ba_imposterCount');
+      if (rawImpCount) {
+        const parsed = parseInt(rawImpCount, 10);
+        if (!Number.isNaN(parsed)) setImposterCount(parsed);
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    try {
+      const rawHint = localStorage.getItem('l3ba_imposterHint');
+      if (rawHint) {
+        setImposterHint(JSON.parse(rawHint) as boolean);
       }
     } catch (e) {
       // ignore
@@ -151,6 +171,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, [selectedCategories]);
 
+  // Persist imposterCount and imposterHint
+  useEffect(() => {
+    try {
+      localStorage.setItem('l3ba_imposterCount', String(imposterCount));
+    } catch (e) {
+      // ignore
+    }
+  }, [imposterCount]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('l3ba_imposterHint', JSON.stringify(imposterHint));
+    } catch (e) {
+      // ignore
+    }
+  }, [imposterHint]);
+
   const value = {
     gameState,
     setGameState,
@@ -164,6 +201,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     currentPlayerIndex,
     firstPlayerIndex,
     imposterCount,
+  setImposterCount,
     imposterHint,
   setImposterHint,
   randomizeSecretWord,
