@@ -12,6 +12,7 @@ export default function RevealCard() {
     secretWord,
     hint,
     imposterIndex,
+  imposterHint,
     currentPlayerIndex,
     playerCount,
     players,
@@ -265,10 +266,14 @@ export default function RevealCard() {
                   <div className="flex flex-col items-center gap-3">
                     {/* <VenetianMask className="w-16 h-16 text-destructive" /> */}
                     <h3 className="text-5xl font-bold text-primary tracking-tight">Imposter</h3>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Lightbulb className="w-4 h-4" />
-                      <span>تلميح: <span className="font-bold text-foreground">{hint}</span></span>
-                    </div>
+                    {imposterHint ? (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Lightbulb className="w-4 h-4" />
+                        <span>تلميح: <span className="font-bold text-foreground">{hint}</span></span>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-muted-foreground"></div>
+                    )}
                   </div>
                 ) : (
                   <p className="text-5xl font-bold text-primary tracking-tight">{secretWord}</p>

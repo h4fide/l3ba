@@ -19,6 +19,7 @@ interface GameContextType {
   firstPlayerIndex: number;
   imposterCount: number;
   imposterHint: boolean;
+  setImposterHint: (val: boolean) => void;
   setupGame: (players: number, selectedCategories: string[], imposterCount: number, imposterHint: boolean) => void;
   nextPlayer: () => void;
   restartGame: () => void;
@@ -149,6 +150,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     firstPlayerIndex,
     imposterCount,
     imposterHint,
+  setImposterHint,
     setupGame,
     nextPlayer,
     restartGame,
