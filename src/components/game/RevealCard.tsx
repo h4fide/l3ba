@@ -67,7 +67,7 @@ export default function RevealCard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="bg-card border rounded-2xl p-8 shadow-xl min-h-64 flex flex-col items-center justify-center"
+          className="bg-card border rounded-2xl p-8 min-h-64 flex flex-col items-center justify-center"
         >
           <h2 className="text-4xl font-bold mb-6 text-primary-foreground">{currentPlayerName}</h2>
           <AnimatePresence mode="wait">
@@ -88,42 +88,166 @@ export default function RevealCard() {
                   onMouseLeave={handleMouseUp}
                   onTouchStart={handleMouseDown}
                   onTouchEnd={handleMouseUp}
-                  className="rounded-full px-10 text-lg relative overflow-hidden"
+                  className="rounded-full px-10 text-lg relative overflow-hidden bg-slate-200 hover:bg-slate-300 text-slate-800 border-2 border-slate-300 shadow-none"
+                  style={{ minHeight: '60px', minWidth: '200px' }}
                 >
-                  <span className="relative z-10">إفصاح</span>
+                  <span className="relative z-20 font-semibold transition-colors duration-200"
+                    style={{ 
+                      color: holdProgress > 0.5 ? 'white' : 'inherit',
+                      textShadow: 'none'
+                    }}
+                  >
+                    إفصاح
+                  </span>
 
-                  {/* Liquid fill overlay - sits under the label (z-0) and animates height + waviness */}
+                  {/* Liquid fill effect */}
                   {(isHolding || holdProgress > 0) && (
-                    <motion.div
-                      className="absolute inset-0 rounded-full overflow-hidden z-0 pointer-events-none"
-                      initial={false}
-                      animate={{}}
-                    >
-                      {/* fill body */}
+                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                      {/* Main liquid body */}
                       <motion.div
-                        className="absolute left-0 right-0 bottom-0 bg-primary"
-                        style={{ height: `${holdProgress * 100}%`, transformOrigin: 'bottom' }}
-                        animate={{ height: `${holdProgress * 100}%` }}
-                        transition={{ ease: 'linear' }}
+                        className="absolute left-0 right-0 bottom-0"
+                        style={{
+                          height: `${Math.max(0, holdProgress * 100)}%`,
+                          background: 'linear-gradient(180deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)',
+                          borderRadius: '50px',
+                        }}
+                        animate={{
+                          height: `${Math.max(0, holdProgress * 100)}%`,
+                        }}
+                        transition={{ 
+                          duration: 0.1, 
+                          ease: 'easeOut'
+                        }}
                       >
-                        {/* wave at the top of the fill to make it look liquid */}
-                        <motion.svg
-                          viewBox="0 0 600 100"
-                          preserveAspectRatio="none"
-                          className="w-full block"
-                          style={{ display: 'block' }}
-                          animate={
-                            isHolding
-                              ? { x: [0, -12, 8, -6, 0] }
-                              : { x: 0 }
-                          }
-                          transition={{ repeat: isHolding ? Infinity : 0, duration: 0.9, ease: 'easeInOut' }}
-                        >
-                          <path d="M0,30 C150,80 350,0 600,30 L600,100 L0,100 Z" fill="rgba(255,255,255,0.18)" />
-                          <path d="M0,40 C150,90 350,10 600,40 L600,100 L0,100 Z" fill="rgba(255,255,255,0.12)" />
-                        </motion.svg>
+                        {/* Liquid wave surface */}
+                        <div className="absolute top-0 left-0 right-0 h-8 overflow-hidden">
+                          <motion.svg
+                            viewBox="0 0 400 40"
+                            className="absolute top-0 left-0 w-full h-full"
+                            style={{ 
+                              transform: 'translateY(-50%)'
+                            }}
+                            animate={isHolding ? {
+                              x: [0, -50, 0],
+                            } : {}}
+                            transition={{
+                              repeat: isHolding ? Infinity : 0,
+                              duration: 2,
+                              ease: "easeInOut",
+                            }}
+                          >
+                            <motion.path
+                              d="M0,20 Q100,10 200,20 T400,20 L400,40 L0,40 Z"
+                              fill="#fca5a5"
+                              animate={isHolding ? {
+                                d: [
+                                  "M0,20 Q100,10 200,20 T400,20 L400,40 L0,40 Z",
+                                  "M0,20 Q100,30 200,20 T400,20 L400,40 L0,40 Z",
+                                  "M0,20 Q100,10 200,20 T400,20 L400,40 L0,40 Z",
+                                ]
+                              } : {}}
+                              transition={{
+                                repeat: isHolding ? Infinity : 0,
+                                duration: 1.5,
+                                ease: "easeInOut",
+                              }}
+                            />
+                          </motion.svg>
+                          
+                          {/* Secondary wave for more liquid effect */}
+                          <motion.svg
+                            viewBox="0 0 400 40"
+                            className="absolute top-0 left-0 w-full h-full opacity-60"
+                            style={{ 
+                              transform: 'translateY(-50%) translateX(25px)'
+                            }}
+                            animate={isHolding ? {
+                              x: [25, -25, 25],
+                            } : {}}
+                            transition={{
+                              repeat: isHolding ? Infinity : 0,
+                              duration: 2.5,
+                              ease: "easeInOut",
+                            }}
+                          >
+                            <motion.path
+                              d="M0,25 Q75,15 150,25 T300,25 T400,25 L400,40 L0,40 Z"
+                              fill="#ef4444"
+                              animate={isHolding ? {
+                                d: [
+                                  "M0,25 Q75,15 150,25 T300,25 T400,25 L400,40 L0,40 Z",
+                                  "M0,25 Q75,35 150,25 T300,25 T400,25 L400,40 L0,40 Z",
+                                  "M0,25 Q75,15 150,25 T300,25 T400,25 L400,40 L0,40 Z",
+                                ]
+                              } : {}}
+                              transition={{
+                                repeat: isHolding ? Infinity : 0,
+                                duration: 1.8,
+                                ease: "easeInOut",
+                              }}
+                            />
+                          </motion.svg>
+                        </div>
+
+                        {/* Bubble effects */}
+                        {holdProgress > 0.3 && (
+                          <>
+                            <motion.div
+                              className="absolute w-2 h-2 bg-white bg-opacity-40 rounded-full"
+                              style={{
+                                left: '20%',
+                                bottom: `${20 + Math.random() * 40}%`,
+                              }}
+                              animate={{
+                                y: [-10, -30],
+                                opacity: [0.6, 0],
+                                scale: [0.8, 1.2],
+                              }}
+                              transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                delay: 0,
+                              }}
+                            />
+                            <motion.div
+                              className="absolute w-1.5 h-1.5 bg-white bg-opacity-30 rounded-full"
+                              style={{
+                                left: '70%',
+                                bottom: `${10 + Math.random() * 50}%`,
+                              }}
+                              animate={{
+                                y: [-10, -40],
+                                opacity: [0.5, 0],
+                                scale: [0.6, 1],
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                delay: 0.5,
+                              }}
+                            />
+                            <motion.div
+                              className="absolute w-1 h-1 bg-white bg-opacity-50 rounded-full"
+                              style={{
+                                left: '45%',
+                                bottom: `${30 + Math.random() * 30}%`,
+                              }}
+                              animate={{
+                                y: [-5, -25],
+                                opacity: [0.7, 0],
+                              }}
+                              transition={{
+                                duration: 1.2,
+                                repeat: Infinity,
+                                delay: 1,
+                              }}
+                            />
+                          </>
+                        )}
                       </motion.div>
-                    </motion.div>
+
+                        {/* Progress indicator removed per request */}
+                    </div>
                   )}
                 </Button>
               </motion.div>
@@ -149,7 +273,7 @@ export default function RevealCard() {
                 ) : (
                   <p className="text-5xl font-bold text-primary tracking-tight">{secretWord}</p>
                 )}
-                <Button variant="secondary" size="lg" onClick={handleNext} className="mt-2 rounded-full px-10 text-lg">
+                <Button variant="secondary" size="lg" onClick={handleNext} className="mt-5 rounded-full px-10 text-lg shadow-none">
                   {isLastPlayer ? 'ابدأ النقاش' : 'اللاعب التالي'}
                   <ChevronFirst className="ml-2" />
                 </Button>
