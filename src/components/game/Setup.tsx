@@ -138,7 +138,7 @@ export default function Setup() {
                   <VenetianMask className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="font-semibold text-base">الـImposters</div>
+                  <div className="font-semibold text-base">الإمبوستر</div>
                   <div className="text-sm text-muted-foreground">
                     {imposterCount === 1 ? 'إمبوستر واحد' : `${imposterCount} إمبوسترز`}
                   </div>

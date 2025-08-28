@@ -37,7 +37,7 @@ function GameView() {
           <h1 className="text-6xl md:text-7xl font-bold text-primary font-headline tracking-tighter">
             L3ba
           </h1>
-          <p className="text-muted-foreground mt-2 text-lg">لعبة  </p>
+          {/* <p className="text-muted-foreground mt-2 text-lg">لعبة  </p> */}
         </header>
       )}
       
