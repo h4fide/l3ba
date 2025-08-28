@@ -37,47 +37,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // Start with deterministic defaults so server and client initial render match.
   const [players, setPlayers] = useState<string[]>(["اللاعب 1", "اللاعب 2", "اللاعب 3"]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
-  // Read persisted state from localStorage only on the client after mount to avoid
-  // server/client rendering differences that cause hydration mismatches.
-  useEffect(() => {
-    try {
-      const rawPlayers = localStorage.getItem('l3ba_players');
-      if (rawPlayers) {
-        setPlayers(JSON.parse(rawPlayers) as string[]);
-      }
-    } catch (e) {
-      // ignore
-    }
-
-    try {
-      const rawCats = localStorage.getItem('l3ba_selectedCategories');
-      if (rawCats) {
-        setSelectedCategories(JSON.parse(rawCats) as string[]);
-      }
-    } catch (e) {
-      // ignore
-    }
-
-    try {
-      const rawImpCount = localStorage.getItem('l3ba_imposterCount');
-      if (rawImpCount) {
-        const parsed = parseInt(rawImpCount, 10);
-        if (!Number.isNaN(parsed)) setImposterCount(parsed);
-      }
-    } catch (e) {
-      // ignore
-    }
-
-    try {
-      const rawHint = localStorage.getItem('l3ba_imposterHint');
-      if (rawHint) {
-        setImposterHint(JSON.parse(rawHint) as boolean);
-      }
-    } catch (e) {
-      // ignore
-    }
-  }, []);
   const [category, setCategory] = useState<string | null>(null);
   const [secretWord, setSecretWord] = useState('');
   const [hint, setHint] = useState('');
@@ -86,6 +45,51 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [firstPlayerIndex, setFirstPlayerIndex] = useState(0);
   const [imposterCount, setImposterCount] = useState(1);
   const [imposterHint, setImposterHint] = useState(false);
+
+  // Read persisted state from localStorage only on the client after mount to avoid
+  // server/client rendering differences that cause hydration mismatches.
+  useEffect(() => {
+    try {
+      const rawPlayers = localStorage.getItem('l3ba_players');
+      if (rawPlayers) {
+        const parsedPlayers = JSON.parse(rawPlayers) as string[];
+        setPlayers(parsedPlayers);
+        setPlayerCount(parsedPlayers.length);
+      }
+    } catch (e) {
+      console.warn('Failed to load players from localStorage:', e);
+    }
+
+    try {
+      const rawCats = localStorage.getItem('l3ba_selectedCategories');
+      if (rawCats) {
+        setSelectedCategories(JSON.parse(rawCats) as string[]);
+      }
+    } catch (e) {
+      console.warn('Failed to load categories from localStorage:', e);
+    }
+
+    try {
+      const rawImpCount = localStorage.getItem('l3ba_imposterCount');
+      if (rawImpCount) {
+        const parsed = parseInt(rawImpCount, 10);
+        if (!Number.isNaN(parsed) && parsed >= 1 && parsed <= 3) {
+          setImposterCount(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load imposter count from localStorage:', e);
+    }
+
+    try {
+      const rawHint = localStorage.getItem('l3ba_imposterHint');
+      if (rawHint !== null) {
+        setImposterHint(JSON.parse(rawHint) as boolean);
+      }
+    } catch (e) {
+      console.warn('Failed to load imposter hint from localStorage:', e);
+    }
+  }, []);
 
   // Pick a random category + word from either the provided categories or the currently
   // selectedCategories state. Exposed so the UI can re-randomize the secret word on demand.
@@ -150,24 +154,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setHint('');
     setImposterIndex(-1);
     setCurrentPlayerIndex(0);
-    setImposterCount(1);
-    setImposterHint(false);
+    // Don't reset imposterCount and imposterHint - keep them persisted
+    // setImposterCount(1);
+    // setImposterHint(false);
   };
 
   // Persist players and selectedCategories to localStorage when they change
   useEffect(() => {
     try {
       localStorage.setItem('l3ba_players', JSON.stringify(players));
+      console.log('Saved players to localStorage:', players);
     } catch (e) {
-      // ignore
+      console.error('Failed to save players to localStorage:', e);
     }
   }, [players]);
 
   useEffect(() => {
     try {
       localStorage.setItem('l3ba_selectedCategories', JSON.stringify(selectedCategories));
+      console.log('Saved categories to localStorage:', selectedCategories);
     } catch (e) {
-      // ignore
+      console.error('Failed to save categories to localStorage:', e);
     }
   }, [selectedCategories]);
 
@@ -175,16 +182,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       localStorage.setItem('l3ba_imposterCount', String(imposterCount));
+      console.log('Saved imposter count to localStorage:', imposterCount);
     } catch (e) {
-      // ignore
+      console.error('Failed to save imposter count to localStorage:', e);
     }
   }, [imposterCount]);
 
   useEffect(() => {
     try {
       localStorage.setItem('l3ba_imposterHint', JSON.stringify(imposterHint));
+      console.log('Saved imposter hint to localStorage:', imposterHint);
     } catch (e) {
-      // ignore
+      console.error('Failed to save imposter hint to localStorage:', e);
     }
   }, [imposterHint]);
 
