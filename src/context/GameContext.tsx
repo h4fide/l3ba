@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { categories, Category } from '@/data/words';
+import { categories, Category, Word } from '@/data/words';
 
 type GameState = 'setup' | 'roleReveal' | 'discussion' | 'end';
 
@@ -13,6 +13,7 @@ interface GameContextType {
   selectedCategories: string[];
   category: string | null;
   secretWord: string;
+  hint: string;
   imposterIndex: number;
   currentPlayerIndex: number;
   firstPlayerIndex: number;
@@ -50,6 +51,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   });
   const [category, setCategory] = useState<string | null>(null);
   const [secretWord, setSecretWord] = useState('');
+  const [hint, setHint] = useState('');
   const [imposterIndex, setImposterIndex] = useState(-1);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [firstPlayerIndex, setFirstPlayerIndex] = useState(0);
@@ -61,21 +63,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
     
     // Randomly select a category from the selected categories
     const randomCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
-    const wordPool = categories[randomCategory as Category] as string[];
+    const wordPool = categories[randomCategory as Category] as Word[];
     
     if (!wordPool || wordPool.length === 0) {
       console.error('No words available for category:', randomCategory);
       return;
     }
     
-    const randomWord = wordPool[Math.floor(Math.random() * wordPool.length)];
+    const randomWordObj = wordPool[Math.floor(Math.random() * wordPool.length)];
     const randomImposter = Math.floor(Math.random() * players);
     const randomFirstPlayer = Math.floor(Math.random() * players);
     
     setPlayerCount(players);
     setSelectedCategories(selectedCategories);
     setCategory(randomCategory);
-    setSecretWord(randomWord);
+    setSecretWord(randomWordObj.word);
+    setHint(randomWordObj.hint);
     setImposterIndex(randomImposter);
     setFirstPlayerIndex(randomFirstPlayer);
     setCurrentPlayerIndex(0);
@@ -108,6 +111,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setPlayerCount(players.length || 3);
     setCategory(null);
     setSecretWord('');
+    setHint('');
     setImposterIndex(-1);
     setCurrentPlayerIndex(0);
     setImposterCount(1);
@@ -139,6 +143,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     selectedCategories,
     category,
     secretWord,
+    hint,
     imposterIndex,
     currentPlayerIndex,
     firstPlayerIndex,

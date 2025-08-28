@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { GameProvider, useGame } from '@/context/GameContext';
 import Setup from '@/components/game/Setup';
-import RoleRevealContainer from '@/components/game/RoleRevealContainer';
 import DiscussionScreen from '@/components/game/DiscussionScreen';
 import EndScreen from '@/components/game/EndScreen';
 import StrategyModal from '@/components/ui/StrategyModal';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
+import RoleRevealContainer from '@/components/game/RevealCard';
 
 function GameView() {
   const { gameState } = useGame();
@@ -32,12 +32,14 @@ function GameView() {
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center p-4">
-      <header className="w-full text-center my-8">
-        <h1 className="text-6xl md:text-7xl font-bold text-primary font-headline tracking-tighter">
-         L3ba
-        </h1>
-        <p className="text-muted-foreground mt-2 text-lg">لعبة  </p>
-      </header>
+      {gameState === 'setup' && (
+        <header className="w-full text-center my-8">
+          <h1 className="text-6xl md:text-7xl font-bold text-primary font-headline tracking-tighter">
+            L3ba
+          </h1>
+          <p className="text-muted-foreground mt-2 text-lg">لعبة  </p>
+        </header>
+      )}
       
       <Card className="w-full shadow-2xl border-primary/20 border-2 bg-card/80 backdrop-blur-lg">
         <CardContent className="p-6 min-h-[28rem] flex items-center justify-center">
