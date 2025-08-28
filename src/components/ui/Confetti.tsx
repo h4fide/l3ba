@@ -1,29 +1,46 @@
 'use client';
 import ReactConfetti from 'react-confetti';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export function Confetti() {
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [isClient, setIsClient] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsClient(true);
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+    function updateDimensions() {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setDimensions({
+          width: rect.width,
+          height: rect.height,
+        });
+      }
     }
     
-    window.addEventListener('resize', handleResize);
-    handleResize();
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
     
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  if (!isClient) {
-    return null;
+  if (!isClient || dimensions.width === 0 || dimensions.height === 0) {
+    return <div ref={containerRef} className="absolute inset-0 pointer-events-none" />;
   }
 
-  return <ReactConfetti width={windowSize.width} height={windowSize.height} recycle={false} />;
+  return (
+    <div ref={containerRef} className="absolute inset-0 pointer-events-none">
+      <ReactConfetti
+        width={dimensions.width}
+        height={dimensions.height}
+        recycle={false}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+        }}
+      />
+    </div>
+  );
 }

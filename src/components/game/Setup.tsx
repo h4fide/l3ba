@@ -181,7 +181,8 @@ export default function Setup() {
       </div>
 
       {/* Imposter Hint Switch - Enhanced */}
-      <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
+      <div className="flex items-center justify-between cursor-pointer group">
+      <div className="rounded-2xl border bg-card p-5 hover:bg-accent">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
@@ -198,9 +199,10 @@ export default function Setup() {
             checked={imposterHint}
             onCheckedChange={setImposterHint}
             className="data-[state=checked]:bg-primary"
-          />
+            />
         </div>
       </div>
+            </div>  
 
       {/* Game Summary Card */}
       <div className="rounded-2xl border bg-muted/30 p-4">

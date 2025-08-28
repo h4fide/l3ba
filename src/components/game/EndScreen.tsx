@@ -11,15 +11,10 @@ export default function EndScreen() {
   return (
     <div className="w-full max-w-md mx-auto space-y-4 p-4 min-h-screen flex flex-col justify-center">
       <Confetti />
-      
+
       {/* Header Section */}
       <div className="text-center mb-8">
-        <div className="relative mb-6">
-          <div className="w-20 h-20 mx-auto rounded-full bg-yellow-400/10 flex items-center justify-center mb-4">
-          </div>
-          <Sparkles className="w-5 h-5 text-yellow-300 absolute top-0 right-1/2 translate-x-8 animate-pulse" />
-          <Sparkles className="w-4 h-4 text-yellow-200 absolute bottom-2 left-1/2 -translate-x-8 animate-bounce" style={{ animationDelay: '1s' }} />
-        </div>
+   
         <h2 className="text-3xl font-bold mb-2">انتهت اللعبة!</h2>
         <p className="text-muted-foreground text-sm">تم كشف الأوراق!</p>
       </div>
@@ -49,22 +44,19 @@ export default function EndScreen() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
-              <ShieldAlert className="w-5 h-5 text-destructive" />
+              <ShieldAlert className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <span className="font-semibold text-base">الـImposter</span>
+              <span className="font-semibold text-base">الامبوسـتـر</span>
               <p className="text-sm text-muted-foreground">اللاعب الذي كان يخدع الجميع</p>
             </div>
           </div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-destructive bg-destructive/5 rounded-xl py-4 px-6 flex items-center justify-center gap-2">
+          <div className="text-2xl font-bold text-primary bg-destructive/10 rounded-xl py-4 px-6 flex items-center justify-center gap-2">
             <ShieldAlert className="w-6 h-6" />
             {players[imposterIndex]}
           </div>
-          <p className="text-sm text-muted-foreground mt-2 opacity-70">
-            كان يحاول خداعكم! 🕵️
-          </p>
         </div>
       </div>
 
@@ -77,7 +69,7 @@ export default function EndScreen() {
             <div className="text-xs text-muted-foreground">إجمالي اللاعبين</div>
           </div>
           <div>
-            <div className="text-lg font-bold text-destructive">1</div>
+            <div className="text-lg font-bold text-primary">1</div>
             <div className="text-xs text-muted-foreground">إمبوستر مكشوف</div>
           </div>
         </div>
