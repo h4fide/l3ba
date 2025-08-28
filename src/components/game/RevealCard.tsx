@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,10 @@ export default function RevealCard() {
   } = useGame();
 
   const [revealed, setRevealed] = useState(false);
+  const [holdProgress, setHoldProgress] = useState(0);
+  const [isHolding, setIsHolding] = useState(false);
+  const holdIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const HOLD_DURATION = 2000; // 2 seconds
 
   const isImposter = currentPlayerIndex === imposterIndex;
   const currentPlayerName = players[currentPlayerIndex] || `اللاعب ${currentPlayerIndex + 1}`;
@@ -28,6 +32,31 @@ export default function RevealCard() {
   const handleNext = () => {
     setRevealed(false);
     nextPlayer();
+  };
+
+  const handleMouseDown = () => {
+    setIsHolding(true);
+    setHoldProgress(0);
+    holdIntervalRef.current = setInterval(() => {
+      setHoldProgress(prev => {
+        if (prev >= 1) {
+          clearInterval(holdIntervalRef.current!);
+          handleReveal();
+          setIsHolding(false);
+          return 1;
+        }
+        return prev + 0.05;
+      });
+    }, HOLD_DURATION / 40);
+  };
+
+  const handleMouseUp = () => {
+    if (holdIntervalRef.current) {
+      clearInterval(holdIntervalRef.current);
+      holdIntervalRef.current = null;
+    }
+    setIsHolding(false);
+    setHoldProgress(0);
   };
 
   return (
@@ -51,9 +80,51 @@ export default function RevealCard() {
                 transition={{ duration: 0.25 }}
                 className="flex flex-col items-center gap-4"
               >
-                <p className="text-muted-foreground text-lg">اضغط للكشف عن الدور</p>
-                <Button size="lg" onClick={handleReveal} className="rounded-full px-10 text-lg">
-                   افصاح
+                <p className="text-muted-foreground text-lg">اضغط مطولاً للكشف عن الدور</p>
+                <Button
+                  size="lg"
+                  onMouseDown={handleMouseDown}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                  onTouchStart={handleMouseDown}
+                  onTouchEnd={handleMouseUp}
+                  className="rounded-full px-10 text-lg relative overflow-hidden"
+                >
+                  <span className="relative z-10">إفصاح</span>
+
+                  {/* Liquid fill overlay - sits under the label (z-0) and animates height + waviness */}
+                  {(isHolding || holdProgress > 0) && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full overflow-hidden z-0 pointer-events-none"
+                      initial={false}
+                      animate={{}}
+                    >
+                      {/* fill body */}
+                      <motion.div
+                        className="absolute left-0 right-0 bottom-0 bg-primary"
+                        style={{ height: `${holdProgress * 100}%`, transformOrigin: 'bottom' }}
+                        animate={{ height: `${holdProgress * 100}%` }}
+                        transition={{ ease: 'linear' }}
+                      >
+                        {/* wave at the top of the fill to make it look liquid */}
+                        <motion.svg
+                          viewBox="0 0 600 100"
+                          preserveAspectRatio="none"
+                          className="w-full block"
+                          style={{ display: 'block' }}
+                          animate={
+                            isHolding
+                              ? { x: [0, -12, 8, -6, 0] }
+                              : { x: 0 }
+                          }
+                          transition={{ repeat: isHolding ? Infinity : 0, duration: 0.9, ease: 'easeInOut' }}
+                        >
+                          <path d="M0,30 C150,80 350,0 600,30 L600,100 L0,100 Z" fill="rgba(255,255,255,0.18)" />
+                          <path d="M0,40 C150,90 350,10 600,40 L600,100 L0,100 Z" fill="rgba(255,255,255,0.12)" />
+                        </motion.svg>
+                      </motion.div>
+                    </motion.div>
+                  )}
                 </Button>
               </motion.div>
             )}
