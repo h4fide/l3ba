@@ -33,24 +33,31 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
   const [gameState, setGameState] = useState<GameState>('setup');
   const [playerCount, setPlayerCount] = useState(3);
-  const [players, setPlayers] = useState<string[]>(() => {
+  // Start with deterministic defaults so server and client initial render match.
+  const [players, setPlayers] = useState<string[]>(["اللاعب 1", "اللاعب 2", "اللاعب 3"]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  // Read persisted state from localStorage only on the client after mount to avoid
+  // server/client rendering differences that cause hydration mismatches.
+  useEffect(() => {
     try {
-      if (typeof window === 'undefined') return ["اللاعب 1", "اللاعب 2", "اللاعب 3"];
-      const raw = localStorage.getItem('l3ba_players');
-      return raw ? JSON.parse(raw) as string[] : ["اللاعب 1", "اللاعب 2", "اللاعب 3"];
+      const rawPlayers = localStorage.getItem('l3ba_players');
+      if (rawPlayers) {
+        setPlayers(JSON.parse(rawPlayers) as string[]);
+      }
     } catch (e) {
-      return ["اللاعب 1", "اللاعب 2", "اللاعب 3"];
+      // ignore
     }
-  });
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
+
     try {
-      if (typeof window === 'undefined') return [];
-      const raw = localStorage.getItem('l3ba_selectedCategories');
-      return raw ? JSON.parse(raw) as string[] : [];
+      const rawCats = localStorage.getItem('l3ba_selectedCategories');
+      if (rawCats) {
+        setSelectedCategories(JSON.parse(rawCats) as string[]);
+      }
     } catch (e) {
-      return [];
+      // ignore
     }
-  });
+  }, []);
   const [category, setCategory] = useState<string | null>(null);
   const [secretWord, setSecretWord] = useState('');
   const [hint, setHint] = useState('');

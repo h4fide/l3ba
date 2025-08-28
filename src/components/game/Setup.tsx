@@ -1,11 +1,12 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-import { Users, MoreHorizontal, Lightbulb, Play, Settings, ChevronRight, AlertCircle } from "lucide-react";
+import { Users, MoreHorizontal, Lightbulb, Play, Settings, ChevronRight, AlertCircle, Group, VenetianMask } from "lucide-react";
 import EditPlayersModal from "./EditPlayersModal";
 import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
@@ -58,7 +59,7 @@ export default function Setup() {
             <Settings className="w-4 h-4 ml-2" />
             تعديل الأسماء
           </Button>
-          <Sheet open={isPlayerSheetOpen} onOpenChange={setIsPlayerSheetOpen}>
+          {/* <Sheet open={isPlayerSheetOpen} onOpenChange={setIsPlayerSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="sm" className="rounded-xl px-4 h-11">
                 <MoreHorizontal className="w-4 h-4" />
@@ -86,7 +87,7 @@ export default function Setup() {
                 ))}
               </div>
             </SheetContent>
-          </Sheet>
+          </Sheet> */}
         </div>
       </div>
 
@@ -95,7 +96,7 @@ export default function Setup() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-primary font-bold">🎯</span>
+              <Group className="w-5 h-5 text-primary" />
             </div>
             <div>
               <span className="font-semibold text-base">الفئات</span>
@@ -134,7 +135,7 @@ export default function Setup() {
             <div className="flex items-center justify-between cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
-                  <span className="text-destructive font-bold">🎭</span>
+                  <VenetianMask className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <div className="font-semibold text-base">الـImposters</div>
@@ -183,11 +184,11 @@ export default function Setup() {
       <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center">
-              <Lightbulb className="w-5 h-5 text-amber-500" />
+            <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+              <Lightbulb className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <div className="font-semibold text-base">تلميح الـImposter</div>
+              <div className="font-semibold text-base">تلميح الإمبوستر</div>
               <div className="text-sm text-muted-foreground">
                 يحصل الإمبوستر على معلومة إضافية
               </div>
@@ -196,7 +197,7 @@ export default function Setup() {
           <Switch
             checked={imposterHint}
             onCheckedChange={setImposterHint}
-            className="data-[state=checked]:bg-amber-500"
+            className="data-[state=checked]:bg-primary"
           />
         </div>
       </div>
@@ -214,7 +215,7 @@ export default function Setup() {
             <div className="text-xs text-muted-foreground">فئة</div>
           </div>
           <div>
-            <div className="text-lg font-bold text-destructive">{imposterCount}</div>
+            <div className="text-lg font-bold text-primary">{imposterCount}</div>
             <div className="text-xs text-muted-foreground">إمبوستر</div>
           </div>
         </div>
