@@ -19,11 +19,11 @@ export default function RoleRevealContainer() {
     return (
       <div className="flex flex-col items-center justify-center text-center h-full">
         <Users className="w-20 h-20 text-primary mb-6" />
-        <h2 className="text-2xl font-bold">Pass the device to</h2>
-        <p className="text-5xl font-bold text-primary my-4">Player {currentPlayerIndex + 1}</p>
-        <p className="text-muted-foreground">({currentPlayerIndex + 1} of {playerCount})</p>
+        <h2 className="text-2xl font-bold">عطي التلفون لـ</h2>
+        <p className="text-5xl font-bold text-primary my-4">اللاعب {currentPlayerIndex + 1}</p>
+        <p className="text-muted-foreground">({currentPlayerIndex + 1} من {playerCount})</p>
         <Button onClick={() => setViewState('reveal')} className="w-full text-lg py-6 mt-8" size="lg">
-          I'm Ready
+          أنا مستعد
         </Button>
       </div>
     );

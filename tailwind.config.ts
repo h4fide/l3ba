@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Alexandria', 'sans-serif'],
-        headline: ['Alexandria', 'sans-serif'],
+        body: ['Amiri', 'serif'],
+        headline: ['Amiri', 'serif'],
         code: ['monospace'],
       },
       colors: {

@@ -16,25 +16,25 @@ interface StrategyModalProps {
 export default function StrategyModal({ isOpen, onClose }: StrategyModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="font-body">
+      <DialogContent className="font-body text-right">
         <DialogHeader>
-          <DialogTitle>Game Tips</DialogTitle>
-          <DialogDescription as="div" className="space-y-4 pt-4 text-left">
+          <DialogTitle>نصائح اللعبة</DialogTitle>
+          <DialogDescription as="div" className="space-y-4 pt-4 text-right">
             <div>
-              <h3 className="font-bold text-primary">For Regular Players:</h3>
-              <p>Try to make the discussion clear enough for your teammates to recognize you, but not so obvious that the Imposter can guess the word.</p>
+              <h3 className="font-bold text-primary">للاعبين العاديين:</h3>
+              <p>حاول تخلي النقاش واضح باش يعرفوك صحابك، ولكن ماشي واضح بزاف باش المحتال مايعرفش الكلمة.</p>
             </div>
             <div>
-              <h3 className="font-bold text-primary">For the Imposter:</h3>
-              <p>Try to stay calm and participate in the discussion normally. Use general answers and listen carefully to others to mimic their ideas.</p>
+              <h3 className="font-bold text-primary">للمحتال:</h3>
+              <p>حاول تبقى هادئ وشارك فالنقاش عادي. استعمل أجوبة عامة وسمع مزيان للآخرين باش تقلد أفكارهم.</p>
             </div>
             <div>
-              <h3 className="font-bold text-primary">General Advice:</h3>
-              <p>Watch out for hesitation or overly general answers in the discussion. These could be signs that reveal the Imposter.</p>
+              <h3 className="font-bold text-primary">نصيحة عامة:</h3>
+              <p>رد البال للتردد أو الأجوبة العامة بزاف فالنقاش، هادو علامات تقدر تكشف المحتال.</p>
             </div>
              <div>
-              <h3 className="font-bold text-primary">Bluffing:</h3>
-              <p>The Imposter might try to mimic others' discussions without being too obvious. Try to catch who is doing this.</p>
+              <h3 className="font-bold text-primary">التمويه:</h3>
+              <p>المحتال يقدر يحاول يقلد نقاشات الآخرين بلا مايبين. حاول تلقى شكون كيدير هادشي.</p>
             </div>
           </DialogDescription>
         </DialogHeader>

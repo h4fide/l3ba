@@ -13,26 +13,26 @@ export default function EndScreen() {
       <Confetti />
       <div className="mb-8">
         <Trophy className="w-24 h-24 text-yellow-400 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold">Game Over!</h2>
-        <p className="text-muted-foreground">The results are in!</p>
+        <h2 className="text-2xl font-bold">انتهت اللعبة!</h2>
+        <p className="text-muted-foreground">ها هي النتائج!</p>
       </div>
 
       <div className="space-y-6 w-full text-center">
         <div className="p-4 bg-secondary rounded-lg">
-          <p className="text-lg text-muted-foreground">The secret word was</p>
+          <p className="text-lg text-muted-foreground">الكلمة السرية كانت</p>
           <p className="text-4xl font-bold text-primary">{secretWord}</p>
         </div>
         <div className="p-4 bg-secondary rounded-lg">
-            <p className="text-lg text-muted-foreground">The Imposter was</p>
+            <p className="text-lg text-muted-foreground">المحتال كان</p>
             <div className="flex items-center justify-center gap-2">
                 <ShieldAlert className="w-8 h-8 text-destructive"/>
-                <p className="text-3xl font-bold text-destructive">Player {imposterIndex + 1}</p>
+                <p className="text-3xl font-bold text-destructive">اللاعب {imposterIndex + 1}</p>
             </div>
         </div>
       </div>
       
       <Button onClick={restartGame} className="w-full text-lg py-6 mt-12" size="lg">
-        Play Another Round
+        لعب جولة أخرى
       </Button>
     </div>
   );
