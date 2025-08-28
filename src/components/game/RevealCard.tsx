@@ -40,7 +40,7 @@ export default function RevealCard() {
           exit={{ opacity: 0, y: -20 }}
           className="bg-card border rounded-2xl p-8 shadow-xl min-h-64 flex flex-col items-center justify-center"
         >
-          <h2 className="text-4xl font-bold mb-6 text-primary">{currentPlayerName}</h2>
+          <h2 className="text-4xl font-bold mb-6 text-primary-foreground">{currentPlayerName}</h2>
           <AnimatePresence mode="wait">
             {!revealed && (
               <motion.div
@@ -68,8 +68,8 @@ export default function RevealCard() {
               >
                 {isImposter ? (
                   <div className="flex flex-col items-center gap-3">
-                    <VenetianMask className="w-16 h-16 text-destructive" />
-                    <h3 className="text-2xl font-bold text-destructive">أنت الـImposter!</h3>
+                    {/* <VenetianMask className="w-16 h-16 text-destructive" /> */}
+                    <h3 className="text-5xl font-bold text-primary tracking-tight">Imposter</h3>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Lightbulb className="w-4 h-4" />
                       <span>تلميح: <span className="font-bold text-foreground">{hint}</span></span>
