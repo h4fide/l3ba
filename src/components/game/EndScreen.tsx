@@ -3,10 +3,10 @@
 import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Confetti } from "@/components/ui/Confetti";
-import { Trophy, ShieldAlert, Sparkles, RotateCcw, Crown } from "lucide-react";
+import { ShieldAlert, RotateCcw, Crown } from "lucide-react";
 
 export default function EndScreen() {
-  const { secretWord, imposterIndex, restartGame, players } = useGame();
+  const { secretWord, imposterIndex, imposterCount, restartGame, players, l7ajEnabled, l7ajIndex, l7ajWord, hideL7aj } = useGame();
 
   return (
     <div className="w-full max-w-md mx-auto space-y-4 p-4 min-h-screen flex flex-col justify-center">
@@ -53,12 +53,43 @@ export default function EndScreen() {
           </div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-primary bg-destructive/10 rounded-xl py-4 px-6 flex items-center justify-center gap-2">
-            <ShieldAlert className="w-6 h-6" />
-            {players[imposterIndex]}
+          <div className="text-2xl font-bold text-primary bg-destructive/10 rounded-xl py-4 px-6 flex flex-col items-center justify-center gap-2">
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="w-6 h-6" />
+              <span>
+                {imposterIndex >= 0 && imposterIndex < players.length ? players[imposterIndex] : '—'}
+              </span>
+            </div>
+            {imposterCount > 1 && (
+              <div className="text-sm text-muted-foreground">و {imposterCount - 1} من الآخرين</div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* L7aj (Mr. White) Card - reveal at end if enabled */}
+      {l7ajEnabled && (
+        <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5 transition-all duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Crown className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <span className="font-semibold text-base">لحاج (Mr. White)</span>
+                <p className="text-sm text-muted-foreground">دور اللحاج في الجولة</p>
+              </div>
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-primary bg-primary/5 rounded-xl py-4 px-6 flex flex-col items-center gap-2">
+              <div>{l7ajIndex >= 0 && l7ajIndex < players.length ? players[l7ajIndex] : '—'}</div>
+              <div className="text-sm text-muted-foreground">كلمة اللحاج: {l7ajWord || '—'}</div>
+              {hideL7aj && <div className="text-xs text-amber-600">تم إخفاء دور اللحاج أثناء اللعب</div>}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Game Summary Card */}
       <div className="rounded-2xl border bg-muted/30 p-4">

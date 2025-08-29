@@ -145,17 +145,48 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (selectedCategories.length === 0) return;
     // Randomize secret word (and category/hint) from the selected categories and capture return
     const randomResult = randomizeSecretWord(selectedCategories) as { category: string | null; wordObj: Word | null } | void;
-    // Resolve imposter count: impCount === 0 means 'auto' -> pick deterministically based on player count
-    // - players <= 5  => 1 imposter
-    // - players <= 10 => 2 imposters
-    // - players > 10  => 3 imposters
+    // Resolve imposter count: impCount === 0 means 'auto' -> pick with a weighted random
+    // so most rounds have 1 imposter, and 2 or 3 are rarer depending on player count.
     let resolvedImpCount = impCount;
     if (impCount === 0) {
-      if (players <= 5) resolvedImpCount = 1;
-      else if (players <= 10) resolvedImpCount = 2;
-      else resolvedImpCount = 3;
-      // Ensure we don't exceed players-1
-      resolvedImpCount = Math.min(resolvedImpCount, Math.max(1, players - 1));
+      // Determine an upper bound like before but we'll pick randomly with a bias toward 1.
+      let baseMax = 1;
+      if (players <= 5) baseMax = 2; // small groups can rarely have 2
+      else if (players <= 10) baseMax = 2;
+      else baseMax = 3;
+
+      const maxImposters = Math.min(baseMax, Math.max(1, players - 1));
+
+      // Build options [1..maxImposters] and choose with weights that favor 1
+      const options: number[] = [];
+      for (let i = 1; i <= maxImposters; i++) options.push(i);
+
+      // Default weight sets (they will be trimmed to options length)
+      let weights: number[] = [];
+      if (maxImposters === 1) {
+        weights = [1];
+      } else if (maxImposters === 2) {
+        // For very small groups prefer 1 even more aggressively
+        weights = players <= 5 ? [0.95, 0.05] : [0.85, 0.15];
+      } else {
+        // 3 options: skew toward 1, rare 3
+        weights = [0.6, 0.3, 0.1];
+      }
+
+      weights = weights.slice(0, options.length);
+      const total = weights.reduce((a, b) => a + b, 0);
+      let r = Math.random() * total;
+      let acc = 0;
+      for (let i = 0; i < options.length; i++) {
+        acc += weights[i];
+        if (r <= acc) {
+          resolvedImpCount = options[i];
+          break;
+        }
+      }
+
+      // Fallback to 1 if something odd happens
+      if (!resolvedImpCount) resolvedImpCount = 1;
     }
     const randomImposter = Math.floor(Math.random() * players);
     let randomL7aj = -1;
