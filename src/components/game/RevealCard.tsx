@@ -103,13 +103,24 @@ export default function RevealCard() {
                   onMouseLeave={handleMouseUp}
                   onTouchStart={handleMouseDown}
                   onTouchEnd={handleMouseUp}
-                  className="rounded-full px-10 text-lg relative overflow-hidden bg-slate-200 hover:bg-slate-300 text-slate-800 border-2 border-slate-300 shadow-none"
-                  style={{ minHeight: '60px', minWidth: '200px' }}
+                  className="rounded-full px-10 text-lg relative overflow-hidden bg-slate-200 hover:bg-slate-300 text-slate-800 border-2 border-slate-300 shadow-none select-none"
+                  style={{ 
+                    minHeight: '60px', 
+                    minWidth: '200px',
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none'
+                  }}
                 >
-                  <span className="relative z-20 font-semibold transition-colors duration-200"
+                  <span className="relative z-20 font-semibold transition-colors duration-200 select-none"
                     style={{ 
                       color: holdProgress > 0.5 ? 'white' : 'inherit',
-                      textShadow: 'none'
+                      textShadow: 'none',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none',
+                      MozUserSelect: 'none',
+                      msUserSelect: 'none'
                     }}
                   >
                     إفصاح
