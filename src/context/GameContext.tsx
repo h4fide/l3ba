@@ -49,6 +49,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [imposterIndex, setImposterIndex] = useState(-1);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [firstPlayerIndex, setFirstPlayerIndex] = useState(0);
+  // imposterCount: -1 = auto/random, 0 = no imposters, >=1 explicit number
   const [imposterCount, setImposterCount] = useState(1);
   const [imposterHint, setImposterHint] = useState(false);
   const [l7ajEnabled, setL7ajEnabled] = useState(false);
@@ -83,8 +84,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const rawImpCount = localStorage.getItem('l3ba_imposterCount');
       if (rawImpCount) {
         const parsed = parseInt(rawImpCount, 10);
-        // allow 0 to represent 'auto' selection
-        if (!Number.isNaN(parsed) && parsed >= 0 && parsed <= 3) {
+        // allow -1 to represent 'auto/random', 0 = no imposters, 1..3 explicit
+        if (!Number.isNaN(parsed) && parsed >= -1 && parsed <= 3) {
           setImposterCount(parsed);
         }
       }
@@ -145,10 +146,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (selectedCategories.length === 0) return;
     // Randomize secret word (and category/hint) from the selected categories and capture return
     const randomResult = randomizeSecretWord(selectedCategories) as { category: string | null; wordObj: Word | null } | void;
-    // Resolve imposter count: impCount === 0 means 'auto' -> pick with a weighted random
-    // so most rounds have 1 imposter, and 2 or 3 are rarer depending on player count.
-    let resolvedImpCount = impCount;
-    if (impCount === 0) {
+  // Resolve imposter count: impCount === -1 means 'auto/random' -> pick with a weighted random
+  // so most rounds have 1 imposter, and 2 or 3 are rarer depending on player count.
+  let resolvedImpCount = impCount;
+  if (impCount === -1) {
       // Determine an upper bound like before but we'll pick randomly with a bias toward 1.
       let baseMax = 1;
       if (players <= 5) baseMax = 2; // small groups can rarely have 2
@@ -185,8 +186,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Fallback to 1 if something odd happens
-      if (!resolvedImpCount) resolvedImpCount = 1;
+  // Fallback to 1 if something odd happens
+  if (!resolvedImpCount && resolvedImpCount !== 0) resolvedImpCount = 1;
     }
     const randomImposter = Math.floor(Math.random() * players);
     let randomL7aj = -1;

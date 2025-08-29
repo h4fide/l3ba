@@ -11,8 +11,7 @@ import EditPlayersModal from "./EditPlayersModal";
 import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
 export default function Setup() {
-  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled } = useGame();
-  const { hideL7aj, setHideL7aj } = useGame();
+  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled, hideL7aj, setHideL7aj } = useGame();
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState(false);
   const [isImposterSheetOpen, setIsImposterSheetOpen] = useState(false);
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);
@@ -20,7 +19,8 @@ export default function Setup() {
 
   // Ensure default selection for imposters is 1 on first load
   useEffect(() => {
-    if (imposterCount === 0 || imposterCount === undefined || imposterCount === null) {
+    // Initialize to 1 if value is unset
+    if (imposterCount === undefined || imposterCount === null) {
       setImposterCount(1);
     }
     // only run on mount
@@ -30,7 +30,7 @@ export default function Setup() {
   // Open handler for the imposter sheet: ensure default selection is 1 when opening
   const handleImposterSheetOpen = (open: boolean) => {
     if (open) {
-      if (imposterCount === 0 || imposterCount === undefined || imposterCount === null) {
+      if (imposterCount === -1 || imposterCount === undefined || imposterCount === null) {
         setImposterCount(1);
       }
     }
@@ -39,22 +39,19 @@ export default function Setup() {
 
   const handleStartGame = () => {
     if (selectedCategories.length === 0) return;
-    // resolve 'auto' imposter count (0) to a value based on players.length
-    const resolved = imposterCount === 0
-      ? players.length <= 5 ? 1 : players.length <= 10 ? 2 : 3
-      : imposterCount;
-    setupGame(players.length, selectedCategories, resolved, imposterHint);
+  // Pass the imposterCount directly: -1 = auto/random, 0 = no imposters, >=1 explicit
+  setupGame(players.length, selectedCategories, imposterCount, imposterHint);
   };
 
   const canStartGame = selectedCategories.length > 0 && players.length >= 3;
-  // Resolve and display imposter count when 'عشوائي' (0) is selected.
+  // Resolve and display imposter count when 'عشوائي' (-1) is selected.
   const resolvedAutoImposter = players.length <= 5 ? 1 : players.length <= 10 ? 2 : 3;
-  const displayImposterCount = imposterCount === 0 ? resolvedAutoImposter : imposterCount;
-  const displayImposterLabel = imposterCount === 0 ? 'عشوائي' : String(displayImposterCount);
+  const displayImposterCount = imposterCount === -1 ? resolvedAutoImposter : imposterCount;
+  const displayImposterLabel = imposterCount === -1 ? 'عشوائي' : String(displayImposterCount);
 
 
   // Build available imposter choices based on players count (max = players-1), cap to 6 for UI
-  const maxSelectable = Math.max(1, Math.min(players.length - 1, 6));
+  const maxSelectable = Math.max(0, Math.min(players.length - 1, 6));
   const availableCounts = Array.from({ length: maxSelectable }, (_, i) => i + 1);
 
   return (
@@ -143,13 +140,13 @@ export default function Setup() {
                 <div>
                         <div className="font-semibold text-base">فوضى</div>
                         <div className="text-sm text-muted-foreground">
-                          {imposterCount === 0 ? 'عشوائي' : displayImposterCount === 1 ? 'إمبوستر واحد' : `${displayImposterCount} إمبوسترز`}
+                          {imposterCount === -1 ? 'عشوائي' : displayImposterCount === 1 ? 'إمبوستر واحد' : `${displayImposterCount} إمبوسترز`}
                         </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-primary">{imposterCount === 0 ? '؟' : displayImposterCount}</div>
+                  <div className="text-3xl font-bold text-primary">{imposterCount === -1 ? '؟' : displayImposterCount}</div>
                   <p className="text-xs text-muted-foreground">إمبوستر</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1" />
@@ -164,6 +161,17 @@ export default function Setup() {
             <div className="grid grid-cols-3 gap-4 mt-6 pb-4">
               <div className="col-span-3 grid grid-cols-3 gap-4">
                 <Button
+                  variant={imposterCount === -1 ? "default" : "outline"}
+                  className="rounded-xl py-8 flex flex-col gap-1"
+                  onClick={() => {
+                    setImposterCount(-1);
+                    setIsImposterSheetOpen(false);
+                  }}
+                >
+                  <span className="text-2xl font-bold">؟</span>
+                  <span className="text-xs opacity-70">عشوائي</span>
+                </Button>
+                <Button
                   variant={imposterCount === 0 ? "default" : "outline"}
                   className="rounded-xl py-8 flex flex-col gap-1"
                   onClick={() => {
@@ -171,8 +179,8 @@ export default function Setup() {
                     setIsImposterSheetOpen(false);
                   }}
                 >
-                  <span className="text-2xl font-bold">؟</span>
-                  <span className="text-xs opacity-70">عشوائي</span>
+                  <span className="text-2xl font-bold">0</span>
+                  <span className="text-xs opacity-70">بلا إمبوستر</span>
                 </Button>
                 {availableCounts.map((count) => (
                   <Button
@@ -196,29 +204,31 @@ export default function Setup() {
         </Sheet>
       </div>
 
-      {/* Imposter Hint Switch - Enhanced */}
-      <div className="flex items-center justify-between cursor-pointer group">
-      <div className="rounded-2xl border bg-card p-5 hover:bg-accent">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
-              <Lightbulb className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <div className="font-semibold text-base">تلميح الإمبوستر</div>
-              <div className="text-sm text-muted-foreground">
-                يحصل الإمبوستر على معلومة إضافية
+      {/* Imposter Hint Switch - Enhanced (hidden when 0 imposters) */}
+      {imposterCount !== 0 && (
+        <div className="flex items-center justify-between cursor-pointer group">
+          <div className="rounded-2xl border bg-card p-5 hover:bg-accent">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                  <Lightbulb className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <div className="font-semibold text-base">تلميح الإمبوستر</div>
+                  <div className="text-sm text-muted-foreground">
+                    يحصل الإمبوستر على معلومة إضافية
+                  </div>
+                </div>
               </div>
+              <Switch
+                checked={imposterHint}
+                onCheckedChange={setImposterHint}
+                className="data-[state=checked]:bg-primary"
+              />
             </div>
           </div>
-          <Switch
-            checked={imposterHint}
-            onCheckedChange={setImposterHint}
-            className="data-[state=checked]:bg-primary"
-            />
         </div>
-      </div>
-            </div>  
+      )}
 
       {/* L7aj (Mr. White) Switch - new role */}
       <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">

@@ -14,7 +14,6 @@ export default function EndScreen() {
 
       {/* Header Section */}
       <div className="text-center mb-8">
-   
         <h2 className="text-3xl font-bold mb-2">انتهت اللعبة!</h2>
         <p className="text-muted-foreground text-sm">تم كشف الأوراق!</p>
       </div>
@@ -54,14 +53,25 @@ export default function EndScreen() {
         </div>
         <div className="text-center">
           <div className="text-2xl font-bold text-primary bg-destructive/10 rounded-xl py-4 px-6 flex flex-col items-center justify-center gap-2">
-            <div className="flex items-center gap-2">
-              <ShieldAlert className="w-6 h-6" />
-              <span>
-                {imposterIndex >= 0 && imposterIndex < players.length ? players[imposterIndex] : '—'}
-              </span>
-            </div>
-            {imposterCount > 1 && (
-              <div className="text-sm text-muted-foreground">و {imposterCount - 1} من الآخرين</div>
+            {imposterCount === 0 ? (
+              <div className="flex flex-col items-center gap-1 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <ShieldAlert className="w-6 h-6" />
+                  <span>لا يوجد إمبوستر هذه الجولة</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  <ShieldAlert className="w-6 h-6" />
+                  <span>
+                    {imposterIndex >= 0 && imposterIndex < players.length ? players[imposterIndex] : '—'}
+                  </span>
+                </div>
+                {imposterCount > 1 && (
+                  <div className="text-sm text-muted-foreground">و {imposterCount - 1} من الآخرين</div>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -100,8 +110,8 @@ export default function EndScreen() {
             <div className="text-xs text-muted-foreground">إجمالي اللاعبين</div>
           </div>
           <div>
-            <div className="text-lg font-bold text-primary">1</div>
-            <div className="text-xs text-muted-foreground">إمبوستر مكشوف</div>
+            <div className="text-lg font-bold text-primary">{typeof imposterCount === 'number' ? imposterCount : '—'}</div>
+            <div className="text-xs text-muted-foreground">إمبوستر</div>
           </div>
         </div>
       </div>

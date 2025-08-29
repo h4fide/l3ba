@@ -12,9 +12,10 @@ export default function RevealCard() {
     secretWord,
     hint,
     imposterIndex,
+    imposterCount,
     l7ajIndex,
     l7ajWord,
-  imposterHint,
+    imposterHint,
     currentPlayerIndex,
     playerCount,
     players,
@@ -28,7 +29,8 @@ export default function RevealCard() {
   const holdIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const HOLD_DURATION = 2000; // 2 seconds
 
-  const isImposter = currentPlayerIndex === imposterIndex;
+  // if imposterCount is 0 then there are no imposters this round
+  const isImposter = imposterCount && imposterCount > 0 ? currentPlayerIndex === imposterIndex : false;
   const isL7aj = currentPlayerIndex === l7ajIndex;
   const currentPlayerName = players[currentPlayerIndex] || `اللاعب ${currentPlayerIndex + 1}`;
   const isLastPlayer = currentPlayerIndex === playerCount - 1;
