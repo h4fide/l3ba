@@ -73,3 +73,46 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom compact scrollbar used for scrollable lists (theme-aware) */
+.custom-scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.08);
+  border-radius: 9999px;
+  border: 2px solid transparent; /* gives a little padding feel */
+  background-clip: padding-box;
+}
+
+/* Slightly stronger thumb in dark mode and on hover */
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.12);
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.18);
+}
+
+/* Light mode adjustments via media query when no .dark class is present */
+@media (prefers-color-scheme: light) {
+  .custom-scrollbar {
+    scrollbar-color: rgba(0,0,0,0.12) transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.12);
+  }
+  .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+  }
+}

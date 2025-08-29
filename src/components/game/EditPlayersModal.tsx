@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,6 +29,7 @@ export default function EditPlayersModal({
   const [newPlayerName, setNewPlayerName] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingName, setEditingName] = useState("");
+  const cancelEditButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -50,6 +51,10 @@ export default function EditPlayersModal({
   };
 
   const handleEditPlayer = (index: number) => {
+    // If another item is being edited, save it first (auto-save UX)
+    if (editingIndex !== null && editingIndex !== index) {
+      handleSaveEdit();
+    }
     setEditingIndex(index);
     setEditingName(players[index]);
   };
@@ -59,6 +64,11 @@ export default function EditPlayersModal({
       const updatedPlayers = [...players];
       updatedPlayers[editingIndex] = editingName.trim();
       setPlayers(updatedPlayers);
+      setEditingIndex(null);
+      setEditingName("");
+    }
+    // if editingName is empty we simply cancel the edit (do not overwrite)
+    if (editingIndex !== null && !editingName.trim()) {
       setEditingIndex(null);
       setEditingName("");
     }
@@ -111,7 +121,7 @@ export default function EditPlayersModal({
           </p>
 
           {/* Players List */}
-          <div className="space-y-2 max-h-64 overflow-y-auto">
+          <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
             {players.map((player, index) => (
               <div key={index} className="flex items-center gap-2 p-2 border rounded-lg">
                 {editingIndex === index ? (
@@ -119,13 +129,24 @@ export default function EditPlayersModal({
                     <Input
                       value={editingName}
                       onChange={(e) => setEditingName(e.target.value)}
+                      onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                        const related = e.relatedTarget as HTMLElement | null;
+                        // If the user clicked the cancel button, run cancel instead of save
+                        if (related && related === cancelEditButtonRef.current) {
+                          handleCancelEdit();
+                        } else {
+                          handleSaveEdit();
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleSaveEdit();
+                        }
+                      }}
                       className="flex-1"
                       autoFocus
                     />
-                    <Button size="sm" onClick={handleSaveEdit}>
-                      حفظ
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={handleCancelEdit}>
+                    <Button size="sm" variant="outline" onClick={handleCancelEdit} ref={(el) => (cancelEditButtonRef.current = el as any)}>
                       إلغاء
                     </Button>
                   </div>
