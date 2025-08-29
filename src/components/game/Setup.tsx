@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -17,6 +17,25 @@ export default function Setup() {
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
 
+  // Ensure default selection for imposters is 1 on first load
+  useEffect(() => {
+    if (imposterCount === 0 || imposterCount === undefined || imposterCount === null) {
+      setImposterCount(1);
+    }
+    // only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Open handler for the imposter sheet: ensure default selection is 1 when opening
+  const handleImposterSheetOpen = (open: boolean) => {
+    if (open) {
+      if (imposterCount === 0 || imposterCount === undefined || imposterCount === null) {
+        setImposterCount(1);
+      }
+    }
+    setIsImposterSheetOpen(open);
+  };
+
   const handleStartGame = () => {
     if (selectedCategories.length === 0) return;
     // resolve 'auto' imposter count (0) to a value based on players.length
@@ -27,10 +46,15 @@ export default function Setup() {
   };
 
   const canStartGame = selectedCategories.length > 0 && players.length >= 3;
-
-  // Determine what to display for imposter count when 'auto' (0) is selected.
+  // Resolve and display imposter count when 'عشوائي' (0) is selected.
   const resolvedAutoImposter = players.length <= 5 ? 1 : players.length <= 10 ? 2 : 3;
   const displayImposterCount = imposterCount === 0 ? resolvedAutoImposter : imposterCount;
+  const displayImposterLabel = imposterCount === 0 ? 'عشوائي' : String(displayImposterCount);
+
+
+  // Build available imposter choices based on players count (max = players-1), cap to 6 for UI
+  const maxSelectable = Math.max(1, Math.min(players.length - 1, 6));
+  const availableCounts = Array.from({ length: maxSelectable }, (_, i) => i + 1);
 
   return (
     <div className="w-full max-w-md mx-auto space-y-4 p-4">
@@ -66,35 +90,6 @@ export default function Setup() {
             <Settings className="w-4 h-4 ml-2" />
             تعديل الأسماء
           </Button>
-          {/* <Sheet open={isPlayerSheetOpen} onOpenChange={setIsPlayerSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="rounded-xl px-4 h-11">
-                <MoreHorizontal className="w-4 h-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="h-auto rounded-t-3xl">
-              <SheetHeader className="text-center">
-                <SheetTitle className="text-xl">اختر عدد اللاعبين</SheetTitle>
-                <p className="text-muted-foreground text-sm">الحد الأدنى 3 لاعبين، الأقصى 20</p>
-              </SheetHeader>
-              <div className="grid grid-cols-4 gap-3 mt-6 pb-4">
-                {Array.from({ length: 18 }, (_, i) => i + 3).map((count) => (
-                  <Button
-                    key={count}
-                    variant={players.length === count ? "default" : "outline"}
-                    className="rounded-xl h-12 font-semibold"
-                    onClick={() => {
-                      const newPlayers = Array.from({ length: count }, (_, i) => `اللاعب ${i + 1}`);
-                      updatePlayers(newPlayers);
-                      setIsPlayerSheetOpen(false);
-                    }}
-                  >
-                    {count}
-                  </Button>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet> */}
         </div>
       </div>
 
@@ -137,7 +132,7 @@ export default function Setup() {
 
       {/* Imposters Row - Enhanced */}
       <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
-        <Sheet open={isImposterSheetOpen} onOpenChange={setIsImposterSheetOpen}>
+        <Sheet open={isImposterSheetOpen} onOpenChange={handleImposterSheetOpen}>
           <SheetTrigger asChild>
             <div className="flex items-center justify-between cursor-pointer group">
               <div className="flex items-center gap-3">
@@ -147,13 +142,13 @@ export default function Setup() {
                 <div>
                         <div className="font-semibold text-base">فوضى</div>
                         <div className="text-sm text-muted-foreground">
-                          {imposterCount === 0 ? 'عشوائي' : imposterCount === 1 ? 'إمبوستر واحد' : `${imposterCount} إمبوسترز`}
+                          {imposterCount === 0 ? 'عشوائي' : displayImposterCount === 1 ? 'إمبوستر واحد' : `${displayImposterCount} إمبوسترز`}
                         </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-primary">{imposterCount}</div>
+                  <div className="text-3xl font-bold text-primary">{imposterCount === 0 ? '؟' : displayImposterCount}</div>
                   <p className="text-xs text-muted-foreground">إمبوستر</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1" />
@@ -178,7 +173,7 @@ export default function Setup() {
                   <span className="text-2xl font-bold">؟</span>
                   <span className="text-xs opacity-70">عشوائي</span>
                 </Button>
-                {[1, 2, 3].map((count) => (
+                {availableCounts.map((count) => (
                   <Button
                     key={count}
                     variant={imposterCount === count ? "default" : "outline"}
@@ -190,7 +185,7 @@ export default function Setup() {
                   >
                     <span className="text-2xl font-bold">{count}</span>
                     <span className="text-xs opacity-70">
-                      {count === 1 ? 'سهل' : count === 2 ? 'متوسط' : 'صعب'}
+                      {count === 1 ? 'سهل' : count === 2 ? 'متوسط' : count === 3 ? 'صعب' : 'متقدم'}
                     </span>
                   </Button>
                 ))}
@@ -253,7 +248,7 @@ export default function Setup() {
             <div className="text-xs text-muted-foreground">فئة</div>
           </div>
           <div>
-            <div className="text-lg font-bold text-primary">{imposterCount}</div>
+            <div className="text-lg font-bold text-primary">{imposterCount === 0 ? '؟' : displayImposterCount}</div>
             <div className="text-xs text-muted-foreground">إمبوستر</div>
           </div>
         </div>
