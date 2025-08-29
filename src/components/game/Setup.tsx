@@ -6,7 +6,7 @@ import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-import { Users, MoreHorizontal, Lightbulb, Play, Settings, ChevronRight, AlertCircle, Group, VenetianMask } from "lucide-react";
+import { Users, MoreHorizontal, Lightbulb, Play, Settings, ChevronRight, AlertCircle, Group, VenetianMask, Drama, UserRoundPlusIcon, UserRoundPlus, EyeOffIcon } from "lucide-react";
 import EditPlayersModal from "./EditPlayersModal";
 import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
@@ -58,7 +58,7 @@ export default function Setup() {
     <div className="w-full max-w-md mx-auto space-y-4 p-4">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold mb-2">إعدادات اللعبة</h2>
-        <p className="text-muted-foreground text-sm">قم بإعداد اللعبة قبل البدء</p>
+  <p className="text-muted-foreground text-xs">قم بإعداد اللعبة قبل البدء</p>
       </div>
 
       {/* Player Count Tile - Enhanced */}
@@ -70,12 +70,12 @@ export default function Setup() {
             </div>
             <div>
               <span className="font-semibold text-base">اللاعبين</span>
-              <p className="text-sm text-muted-foreground">من 3 إلى 20 لاعب</p>
+              <p className="text-xs text-muted-foreground">من 3 إلى 20 لاعب</p>
             </div>
           </div>
           <div className="text-right">
             <span className="text-3xl font-bold text-primary">{players.length}</span>
-            <p className="text-xs text-muted-foreground">لاعب</p>
+            <p className="text-[0.7rem] text-muted-foreground">لاعب</p>
           </div>
         </div>
         <div className="flex gap-3">
@@ -100,12 +100,12 @@ export default function Setup() {
             </div>
             <div>
               <span className="font-semibold text-base">الفئات</span>
-              <p className="text-sm text-muted-foreground">اختر المواضيع للعب</p>
+              <p className="text-xs text-muted-foreground">اختر المواضيع للعب</p>
             </div>
           </div>
           <div className="text-right">
             <span className="text-3xl font-bold text-primary">{selectedCategories.length}</span>
-            <p className="text-xs text-muted-foreground">فئة</p>
+            <p className="text-[0.7rem] text-muted-foreground">فئة</p>
           </div>
         </div>
         <Button
@@ -134,12 +134,12 @@ export default function Setup() {
           <SheetTrigger asChild>
             <div className="flex items-center justify-between cursor-pointer group">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <VenetianMask className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                         <div className="font-semibold text-base">فوضى</div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-xs text-muted-foreground">
                           {imposterCount === -1 ? 'عشوائي' : displayImposterCount === 1 ? 'إمبوستر واحد' : `${displayImposterCount} إمبوسترز`}
                         </div>
                 </div>
@@ -147,7 +147,7 @@ export default function Setup() {
               <div className="flex items-center gap-2">
                 <div className="text-right">
                   <div className="text-3xl font-bold text-primary">{imposterCount === -1 ? '؟' : displayImposterCount}</div>
-                  <p className="text-xs text-muted-foreground">إمبوستر</p>
+                  <p className="text-[0.7rem] text-muted-foreground">إمبوستر</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1" />
               </div>
@@ -156,7 +156,7 @@ export default function Setup() {
           <SheetContent side="bottom" className="h-auto rounded-t-3xl">
             <SheetHeader className="text-center">
               <SheetTitle className="text-xl">اختر عدد الـImposters</SheetTitle>
-              <p className="text-muted-foreground text-sm">كلما زاد العدد، زادت الصعوبة</p>
+              <p className="text-muted-foreground text-xs">كلما زاد العدد، زادت الصعوبة</p>
             </SheetHeader>
             <div className="grid grid-cols-3 gap-4 mt-6 pb-4">
               <div className="col-span-3 grid grid-cols-3 gap-4">
@@ -169,7 +169,7 @@ export default function Setup() {
                   }}
                 >
                   <span className="text-2xl font-bold">؟</span>
-                  <span className="text-xs opacity-70">عشوائي</span>
+                  <span className="text-[0.7rem] opacity-70">عشوائي</span>
                 </Button>
                 <Button
                   variant={imposterCount === 0 ? "default" : "outline"}
@@ -180,7 +180,7 @@ export default function Setup() {
                   }}
                 >
                   <span className="text-2xl font-bold">0</span>
-                  <span className="text-xs opacity-70">بلا إمبوستر</span>
+                  <span className="text-[0.7rem] opacity-70">بلا إمبوستر</span>
                 </Button>
                 {availableCounts.map((count) => (
                   <Button
@@ -193,7 +193,7 @@ export default function Setup() {
                     }}
                   >
                     <span className="text-2xl font-bold">{count}</span>
-                    <span className="text-xs opacity-70">
+                    <span className="text-[0.7rem] opacity-70">
                       {count === 1 ? 'سهل' : count === 2 ? 'متوسط' : count === 3 ? 'صعب' : 'متقدم'}
                     </span>
                   </Button>
@@ -210,12 +210,12 @@ export default function Setup() {
           <div className="rounded-2xl border bg-card p-5 hover:bg-accent">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <div className="font-semibold text-base">تلميح الإمبوستر</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-xs text-muted-foreground">
                     يحصل الإمبوستر على معلومة إضافية
                   </div>
                 </div>
@@ -234,12 +234,12 @@ export default function Setup() {
       <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
-              <VenetianMask className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Drama className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <div className="font-semibold text-base">لحاج (L7aj)</div>
-              <div className="text-sm text-muted-foreground">شخصية خاصة تحصل على كلمة منفصلة</div>
+              <div className="font-semibold text-base">لحاج</div>
+              <div className="text-xs text-muted-foreground">شخصية خاصة تحصل على كلمة منفصلة</div>
             </div>
           </div>
           <Switch checked={l7ajEnabled} onCheckedChange={setL7ajEnabled} className="data-[state=checked]:bg-primary" />
@@ -251,12 +251,12 @@ export default function Setup() {
         <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
-                <VenetianMask className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <EyeOffIcon className="w-5 h-5 text-primary" />
               </div>
               <div>
                 <div className="font-semibold text-base">إخفاء لحاج</div>
-                <div className="text-sm text-muted-foreground">اجعل اللاعب لا يعرف إذا كان لحاج أم لا</div>
+                <div className="text-xs text-muted-foreground">اجعل اللاعب لا يعرف إذا كان لحاج أم لا</div>
               </div>
             </div>
             <Switch checked={hideL7aj} onCheckedChange={setHideL7aj} className="data-[state=checked]:bg-primary" />
@@ -295,9 +295,9 @@ export default function Setup() {
           {canStartGame ? 'ابدأ اللعبة' : 'اختر الفئات أولاً'}
         </Button>
         {!canStartGame && (
-          <p className="text-center text-xs text-muted-foreground mt-2">
-            تأكد من اختيار فئة واحدة على الأقل
-          </p>
+          <p className="text-center text-[0.7rem] text-muted-foreground mt-2">
+              تأكد من اختيار فئة واحدة على الأقل
+            </p>
         )}
       </div>
 
