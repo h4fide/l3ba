@@ -21,7 +21,11 @@ interface GameContextType {
   setImposterCount: (n: number) => void;
   imposterHint: boolean;
   setImposterHint: (val: boolean) => void;
-  randomizeSecretWord: (categories?: string[]) => void;
+  l7ajEnabled: boolean;
+  setL7ajEnabled: (val: boolean) => void;
+  l7ajIndex: number;
+  l7ajWord: string;
+  randomizeSecretWord: (categories?: string[]) => { category: string | null; wordObj: Word | null } | void;
   setupGame: (players: number, selectedCategories: string[], imposterCount: number, imposterHint: boolean) => void;
   nextPlayer: () => void;
   restartGame: () => void;
@@ -45,6 +49,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [firstPlayerIndex, setFirstPlayerIndex] = useState(0);
   const [imposterCount, setImposterCount] = useState(1);
   const [imposterHint, setImposterHint] = useState(false);
+  const [l7ajEnabled, setL7ajEnabled] = useState(false);
+  const [l7ajIndex, setL7ajIndex] = useState(-1);
+  const [l7ajWord, setL7ajWord] = useState('');
 
   // Read persisted state from localStorage only on the client after mount to avoid
   // server/client rendering differences that cause hydration mismatches.
@@ -73,7 +80,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const rawImpCount = localStorage.getItem('l3ba_imposterCount');
       if (rawImpCount) {
         const parsed = parseInt(rawImpCount, 10);
-        if (!Number.isNaN(parsed) && parsed >= 1 && parsed <= 3) {
+        // allow 0 to represent 'auto' selection
+        if (!Number.isNaN(parsed) && parsed >= 0 && parsed <= 3) {
           setImposterCount(parsed);
         }
       }
@@ -88,6 +96,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }
     } catch (e) {
       console.warn('Failed to load imposter hint from localStorage:', e);
+    }
+
+    try {
+      const rawL7 = localStorage.getItem('l3ba_l7ajEnabled');
+      if (rawL7 !== null) {
+        setL7ajEnabled(JSON.parse(rawL7) as boolean);
+      }
+    } catch (e) {
+      console.warn('Failed to load l7aj enabled from localStorage:', e);
     }
   }, []);
 
@@ -109,20 +126,64 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setCategory(randomCategory);
     setSecretWord(randomWordObj.word);
     setHint(randomWordObj.hint);
+    return { category: randomCategory, wordObj: randomWordObj };
   };
 
   const setupGame = (players: number, selectedCategories: string[], impCount: number, hint: boolean) => {
     if (selectedCategories.length === 0) return;
-  // Randomize secret word (and category/hint) from the selected categories
-  randomizeSecretWord(selectedCategories);
-  const randomImposter = Math.floor(Math.random() * players);
-  const randomFirstPlayer = Math.floor(Math.random() * players);
+    // Randomize secret word (and category/hint) from the selected categories and capture return
+    const randomResult = randomizeSecretWord(selectedCategories) as { category: string | null; wordObj: Word | null } | void;
+    // Resolve imposter count: impCount === 0 means 'auto' -> pick deterministically based on player count
+    // - players <= 5  => 1 imposter
+    // - players <= 10 => 2 imposters
+    // - players > 10  => 3 imposters
+    let resolvedImpCount = impCount;
+    if (impCount === 0) {
+      if (players <= 5) resolvedImpCount = 1;
+      else if (players <= 10) resolvedImpCount = 2;
+      else resolvedImpCount = 3;
+      // Ensure we don't exceed players-1
+      resolvedImpCount = Math.min(resolvedImpCount, Math.max(1, players - 1));
+    }
+    const randomImposter = Math.floor(Math.random() * players);
+    let randomL7aj = -1;
+    let chosenL7ajWord = '';
+    if (l7ajEnabled) {
+      // pick a different player index for l7aj
+      randomL7aj = Math.floor(Math.random() * players);
+      let attempts = 0;
+      while (randomL7aj === randomImposter && attempts < 10) {
+        randomL7aj = Math.floor(Math.random() * players);
+        attempts++;
+      }
+
+      // pick the l7aj word from same category but different from secret word
+      const chosenCategory = randomResult?.category || category;
+      if (chosenCategory) {
+        const wordPool = categories[chosenCategory as Category] as Word[];
+        if (wordPool && wordPool.length > 0) {
+          // try to pick a different word
+          let candidate = wordPool[Math.floor(Math.random() * wordPool.length)].word;
+          let tries = 0;
+          const secret = randomResult?.wordObj?.word || secretWord;
+          while ((candidate === secret || !candidate) && tries < 20) {
+            candidate = wordPool[Math.floor(Math.random() * wordPool.length)].word;
+            tries++;
+          }
+          chosenL7ajWord = candidate;
+        }
+      }
+    }
+    const randomFirstPlayer = Math.floor(Math.random() * players);
     setPlayerCount(players);
     setSelectedCategories(selectedCategories);
     setImposterIndex(randomImposter);
+    setL7ajIndex(randomL7aj);
+    setL7ajWord(chosenL7ajWord);
     setFirstPlayerIndex(randomFirstPlayer);
     setCurrentPlayerIndex(0);
-    setImposterCount(impCount);
+  // persist the chosen imposterCount for this round (if auto was requested, save the resolved value)
+  setImposterCount(resolvedImpCount);
     setImposterHint(hint);
     setGameState('roleReveal');
   };
@@ -197,6 +258,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, [imposterHint]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('l3ba_l7ajEnabled', JSON.stringify(l7ajEnabled));
+      console.log('Saved l7aj enabled to localStorage:', l7ajEnabled);
+    } catch (e) {
+      console.error('Failed to save l7aj enabled to localStorage:', e);
+    }
+  }, [l7ajEnabled]);
+
   const value = {
     gameState,
     setGameState,
@@ -213,6 +283,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   setImposterCount,
     imposterHint,
   setImposterHint,
+  l7ajEnabled,
+  setL7ajEnabled,
+  l7ajIndex,
+  l7ajWord,
   randomizeSecretWord,
     setupGame,
     nextPlayer,

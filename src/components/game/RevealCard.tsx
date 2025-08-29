@@ -12,6 +12,8 @@ export default function RevealCard() {
     secretWord,
     hint,
     imposterIndex,
+    l7ajIndex,
+    l7ajWord,
   imposterHint,
     currentPlayerIndex,
     playerCount,
@@ -26,6 +28,7 @@ export default function RevealCard() {
   const HOLD_DURATION = 2000; // 2 seconds
 
   const isImposter = currentPlayerIndex === imposterIndex;
+  const isL7aj = currentPlayerIndex === l7ajIndex;
   const currentPlayerName = players[currentPlayerIndex] || `اللاعب ${currentPlayerIndex + 1}`;
   const isLastPlayer = currentPlayerIndex === playerCount - 1;
 
@@ -76,7 +79,9 @@ export default function RevealCard() {
           exit={{ opacity: 0, y: -20 }}
           className="bg-card border rounded-2xl p-8 min-h-64 flex flex-col items-center justify-center"
         >
-          <h2 className="text-4xl font-bold mb-6 text-primary-foreground">{currentPlayerName}</h2>
+          <h2 className="text-4xl font-bold mb-2 text-primary-foreground">{currentPlayerName}</h2>
+          <div className="w-full h-1 bg-muted mb-6" />
+
           <AnimatePresence mode="wait">
             {!revealed && (
               <motion.div
@@ -280,6 +285,12 @@ export default function RevealCard() {
                     ) : (
                       <div className="text-sm text-muted-foreground"></div>
                     )}
+                  </div>
+                ) : isL7aj ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <h5 className="text-2xl font-bold text-primary"> انت هو لحاج</h5>
+                    <div className="w-full h-1 bg-muted mb-2" />
+                    <p className="text-3xl font-bold tracking-tight">{l7ajWord || '—'}</p>
                   </div>
                 ) : (
                   <p className="text-5xl font-bold text-primary tracking-tight">{secretWord}</p>

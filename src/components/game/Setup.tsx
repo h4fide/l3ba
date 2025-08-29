@@ -11,7 +11,7 @@ import EditPlayersModal from "./EditPlayersModal";
 import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
 export default function Setup() {
-  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount } = useGame();
+  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled } = useGame();
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState(false);
   const [isImposterSheetOpen, setIsImposterSheetOpen] = useState(false);
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);
@@ -19,10 +19,18 @@ export default function Setup() {
 
   const handleStartGame = () => {
     if (selectedCategories.length === 0) return;
-    setupGame(players.length, selectedCategories, imposterCount, imposterHint);
+    // resolve 'auto' imposter count (0) to a value based on players.length
+    const resolved = imposterCount === 0
+      ? players.length <= 5 ? 1 : players.length <= 10 ? 2 : 3
+      : imposterCount;
+    setupGame(players.length, selectedCategories, resolved, imposterHint);
   };
 
   const canStartGame = selectedCategories.length > 0 && players.length >= 3;
+
+  // Determine what to display for imposter count when 'auto' (0) is selected.
+  const resolvedAutoImposter = players.length <= 5 ? 1 : players.length <= 10 ? 2 : 3;
+  const displayImposterCount = imposterCount === 0 ? resolvedAutoImposter : imposterCount;
 
   return (
     <div className="w-full max-w-md mx-auto space-y-4 p-4">
@@ -137,10 +145,10 @@ export default function Setup() {
                   <VenetianMask className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="font-semibold text-base">الإمبوستر</div>
-                  <div className="text-sm text-muted-foreground">
-                    {imposterCount === 1 ? 'إمبوستر واحد' : `${imposterCount} إمبوسترز`}
-                  </div>
+                        <div className="font-semibold text-base">فوضى</div>
+                        <div className="text-sm text-muted-foreground">
+                          {imposterCount === 0 ? 'عشوائي' : imposterCount === 1 ? 'إمبوستر واحد' : `${imposterCount} إمبوسترز`}
+                        </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -158,22 +166,35 @@ export default function Setup() {
               <p className="text-muted-foreground text-sm">كلما زاد العدد، زادت الصعوبة</p>
             </SheetHeader>
             <div className="grid grid-cols-3 gap-4 mt-6 pb-4">
-              {[1, 2, 3].map((count) => (
+              <div className="col-span-3 grid grid-cols-3 gap-4">
                 <Button
-                  key={count}
-                  variant={imposterCount === count ? "default" : "outline"}
+                  variant={imposterCount === 0 ? "default" : "outline"}
                   className="rounded-xl py-8 flex flex-col gap-1"
                   onClick={() => {
-                    setImposterCount(count);
+                    setImposterCount(0);
                     setIsImposterSheetOpen(false);
                   }}
                 >
-                  <span className="text-2xl font-bold">{count}</span>
-                  <span className="text-xs opacity-70">
-                    {count === 1 ? 'سهل' : count === 2 ? 'متوسط' : 'صعب'}
-                  </span>
+                  <span className="text-2xl font-bold">؟</span>
+                  <span className="text-xs opacity-70">عشوائي</span>
                 </Button>
-              ))}
+                {[1, 2, 3].map((count) => (
+                  <Button
+                    key={count}
+                    variant={imposterCount === count ? "default" : "outline"}
+                    className="rounded-xl py-8 flex flex-col gap-1"
+                    onClick={() => {
+                      setImposterCount(count);
+                      setIsImposterSheetOpen(false);
+                    }}
+                  >
+                    <span className="text-2xl font-bold">{count}</span>
+                    <span className="text-xs opacity-70">
+                      {count === 1 ? 'سهل' : count === 2 ? 'متوسط' : 'صعب'}
+                    </span>
+                  </Button>
+                ))}
+              </div>
             </div>
           </SheetContent>
         </Sheet>
@@ -202,6 +223,22 @@ export default function Setup() {
         </div>
       </div>
             </div>  
+
+      {/* L7aj (Mr. White) Switch - new role */}
+      <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+              <VenetianMask className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <div className="font-semibold text-base">لحاج (L7aj)</div>
+              <div className="text-sm text-muted-foreground">شخصية خاصة تحصل على كلمة منفصلة</div>
+            </div>
+          </div>
+          <Switch checked={l7ajEnabled} onCheckedChange={setL7ajEnabled} className="data-[state=checked]:bg-primary" />
+        </div>
+      </div>
 
       {/* Game Summary Card */}
       <div className="rounded-2xl border bg-muted/30 p-4">
