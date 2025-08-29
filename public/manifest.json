@@ -1,6 +1,8 @@
 {
   "name": "L3ba",
   "short_name": "L3ba",
+  "id": "https://l3ba.vercel.app/",
+  "description": "L3ba — a simple multiplayer word game",
   "start_url": "/",
   "scope": "https://l3ba.vercel.app/",
   "display": "fullscreen",
@@ -8,6 +10,15 @@
   "background_color": "#ffffff",
   "theme_color": "#e11d48",
   "categories": ["games"],
+  "shortcuts": [
+    {
+      "name": "Info",
+      "short_name": "Info",
+      "description": "Additional information available on hover",
+      "url": "/info",
+      "icons": [{ "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }]
+    }
+  ],
   "icons": [
     {
       "src": "/icon-192.png",
