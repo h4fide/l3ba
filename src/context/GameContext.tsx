@@ -23,6 +23,8 @@ interface GameContextType {
   setImposterHint: (val: boolean) => void;
   l7ajEnabled: boolean;
   setL7ajEnabled: (val: boolean) => void;
+  hideL7aj: boolean;
+  setHideL7aj: (val: boolean) => void;
   l7ajIndex: number;
   l7ajWord: string;
   randomizeSecretWord: (categories?: string[]) => { category: string | null; wordObj: Word | null } | void;
@@ -52,6 +54,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [l7ajEnabled, setL7ajEnabled] = useState(false);
   const [l7ajIndex, setL7ajIndex] = useState(-1);
   const [l7ajWord, setL7ajWord] = useState('');
+  const [hideL7aj, setHideL7aj] = useState(false);
 
   // Read persisted state from localStorage only on the client after mount to avoid
   // server/client rendering differences that cause hydration mismatches.
@@ -105,6 +108,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }
     } catch (e) {
       console.warn('Failed to load l7aj enabled from localStorage:', e);
+    }
+
+    try {
+      const rawHide = localStorage.getItem('l3ba_hideL7aj');
+      if (rawHide !== null) {
+        setHideL7aj(JSON.parse(rawHide) as boolean);
+      }
+    } catch (e) {
+      console.warn('Failed to load hideL7aj from localStorage:', e);
     }
   }, []);
 
@@ -267,6 +279,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, [l7ajEnabled]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('l3ba_hideL7aj', JSON.stringify(hideL7aj));
+      console.log('Saved hideL7aj to localStorage:', hideL7aj);
+    } catch (e) {
+      console.error('Failed to save hideL7aj to localStorage:', e);
+    }
+  }, [hideL7aj]);
+
   const value = {
     gameState,
     setGameState,
@@ -285,6 +306,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   setImposterHint,
   l7ajEnabled,
   setL7ajEnabled,
+  hideL7aj,
+  setHideL7aj,
   l7ajIndex,
   l7ajWord,
   randomizeSecretWord,

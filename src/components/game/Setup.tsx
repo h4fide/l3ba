@@ -12,6 +12,7 @@ import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
 export default function Setup() {
   const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled } = useGame();
+  const { hideL7aj, setHideL7aj } = useGame();
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState(false);
   const [isImposterSheetOpen, setIsImposterSheetOpen] = useState(false);
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);
@@ -235,8 +236,26 @@ export default function Setup() {
         </div>
       </div>
 
+      {/* Hide L7aj button/toggle when L7aj is enabled */}
+      {l7ajEnabled && (
+        <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+                <VenetianMask className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div className="font-semibold text-base">إخفاء لحاج</div>
+                <div className="text-sm text-muted-foreground">اجعل اللاعب لا يعرف إذا كان لحاج أم لا</div>
+              </div>
+            </div>
+            <Switch checked={hideL7aj} onCheckedChange={setHideL7aj} className="data-[state=checked]:bg-primary" />
+          </div>
+        </div>
+      )}
+
       {/* Game Summary Card */}
-      <div className="rounded-2xl border bg-muted/30 p-4">
+      {/* <div className="rounded-2xl border bg-muted/30 p-4">
         <h3 className="font-semibold mb-3 text-center">ملخص اللعبة</h3>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
@@ -252,7 +271,7 @@ export default function Setup() {
             <div className="text-xs text-muted-foreground">إمبوستر</div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Start Button - Enhanced */}
       <div className="pt-2">

@@ -19,6 +19,7 @@ export default function RevealCard() {
     playerCount,
     players,
     nextPlayer,
+    hideL7aj,
   } = useGame();
 
   const [revealed, setRevealed] = useState(false);
@@ -288,9 +289,18 @@ export default function RevealCard() {
                   </div>
                 ) : isL7aj ? (
                   <div className="flex flex-col items-center gap-2">
-                    <h5 className="text-2xl font-bold text-primary"> انت هو لحاج</h5>
-                    <div className="w-full h-1 bg-muted mb-2" />
-                    <p className="text-3xl font-bold tracking-tight">{l7ajWord || '—'}</p>
+                    {/* If hideL7aj is enabled, don't explicitly tell the player they are L7aj */}
+                    {hideL7aj ? (
+                      <>
+                        <p className="text-5xl font-bold text-primary tracking-tight">{l7ajWord || '—'}</p>
+                      </>
+                    ) : (
+                      <>
+                        <h5 className="text-2xl font-bold text-primary"> انت هو لحاج</h5>
+                        <div className="w-full h-1 bg-muted mb-2" />
+                        <p className="text-3xl font-bold tracking-tight">{l7ajWord || '—'}</p>
+                      </>
+                    )}
                   </div>
                 ) : (
                   <p className="text-5xl font-bold text-primary tracking-tight">{secretWord}</p>
