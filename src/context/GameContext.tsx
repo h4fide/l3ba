@@ -27,6 +27,9 @@ interface GameContextType {
   setHideL7aj: (val: boolean) => void;
   l7ajIndex: number;
   l7ajWord: string;
+  trapEnabled: boolean;
+  setTrapEnabled: (val: boolean) => void;
+  trapActivated: boolean;
   randomizeSecretWord: (categories?: string[]) => { category: string | null; wordObj: Word | null } | void;
   setupGame: (players: number, selectedCategories: string[], imposterCount: number, imposterHint: boolean) => void;
   nextPlayer: () => void;
@@ -56,6 +59,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [l7ajIndex, setL7ajIndex] = useState(-1);
   const [l7ajWord, setL7ajWord] = useState('');
   const [hideL7aj, setHideL7aj] = useState(false);
+  const [trapEnabled, setTrapEnabled] = useState(false);
+  const [trapActivated, setTrapActivated] = useState(false);
 
   // Read persisted state from localStorage only on the client after mount to avoid
   // server/client rendering differences that cause hydration mismatches.
@@ -119,6 +124,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     } catch (e) {
       console.warn('Failed to load hideL7aj from localStorage:', e);
     }
+
+    try {
+      const rawTrap = localStorage.getItem('l3ba_trapEnabled');
+      if (rawTrap !== null) {
+        setTrapEnabled(JSON.parse(rawTrap) as boolean);
+      }
+    } catch (e) {
+      console.warn('Failed to load trapEnabled from localStorage:', e);
+    }
   }, []);
 
   // Pick a random category + word from either the provided categories or the currently
@@ -147,12 +161,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
     // Randomize secret word (and category/hint) from the selected categories and capture return
     const randomResult = randomizeSecretWord(selectedCategories) as { category: string | null; wordObj: Word | null } | void;
     
-    // Use the imposter count directly (no random logic)
-    const resolvedImpCount = impCount;
+    // Check if trap should be activated (rare occurrence - 5% chance when trap is enabled)
+    const shouldActivateTrap = trapEnabled && Math.random() < 0.05;
+    setTrapActivated(shouldActivateTrap);
+    
+    // Use the imposter count directly (no random logic), but if trap is activated, make all players imposters
+    const resolvedImpCount = shouldActivateTrap ? players : impCount;
     const randomImposter = Math.floor(Math.random() * players);
     let randomL7aj = -1;
     let chosenL7ajWord = '';
-    if (l7ajEnabled) {
+    
+    // L7aj logic (only if trap is not activated and l7aj is enabled)
+    if (l7ajEnabled && !shouldActivateTrap) {
       // pick a different player index for l7aj
       randomL7aj = Math.floor(Math.random() * players);
       let attempts = 0;
@@ -219,6 +239,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setHint('');
     setImposterIndex(-1);
     setCurrentPlayerIndex(0);
+    setTrapActivated(false);
     // Don't reset imposterCount and imposterHint - keep them persisted
     // setImposterCount(1);
     // setImposterHint(false);
@@ -280,6 +301,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, [hideL7aj]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('l3ba_trapEnabled', JSON.stringify(trapEnabled));
+      console.log('Saved trapEnabled to localStorage:', trapEnabled);
+    } catch (e) {
+      console.error('Failed to save trapEnabled to localStorage:', e);
+    }
+  }, [trapEnabled]);
+
   const value = {
     gameState,
     setGameState,
@@ -302,6 +332,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   setHideL7aj,
   l7ajIndex,
   l7ajWord,
+  trapEnabled,
+  setTrapEnabled,
+  trapActivated,
   randomizeSecretWord,
     setupGame,
     nextPlayer,

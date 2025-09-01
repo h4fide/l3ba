@@ -6,12 +6,12 @@ import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-import { Users, MoreHorizontal, Lightbulb, Play, Settings, ChevronRight, AlertCircle, Group, VenetianMask, Drama, UserRoundPlusIcon, UserRoundPlus, EyeOffIcon } from "lucide-react";
+import { Users, MoreHorizontal, Lightbulb, Play, Settings, ChevronRight, AlertCircle, Group, VenetianMask, Drama, UserRoundPlusIcon, UserRoundPlus, EyeOffIcon, Zap } from "lucide-react";
 import EditPlayersModal from "./EditPlayersModal";
 import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
 export default function Setup() {
-  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled, hideL7aj, setHideL7aj } = useGame();
+  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled, hideL7aj, setHideL7aj, trapEnabled, setTrapEnabled, trapActivated } = useGame();
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState(false);
   const [isImposterSheetOpen, setIsImposterSheetOpen] = useState(false);
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);
@@ -251,6 +251,30 @@ export default function Setup() {
           </div>
         </div>
       )}
+
+      {/* Trap Feature - لمصيدة */}
+      <div className="rounded-2xl border border-orange-500/80 bg-gradient-to-br from-orange-500/20 via-orange-600/15 to-red-500/25 p-5 hover:bg-accent/5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
+              <Zap className="w-5 h-5 text-orange-500" />
+            </div>
+            <div>
+              <div className="font-semibold text-base">لمصيدة</div>
+              <div className="text-xs text-muted-foreground">فرصة نادرة لجعل جميع اللاعبين إمبوسترز (5%)</div>
+            </div>
+          </div>
+          <Switch checked={trapEnabled} onCheckedChange={setTrapEnabled} className="data-[state=checked]:bg-orange-500" />
+        </div>
+        {trapActivated && (
+          <div className="mt-3 p-2 bg-orange-500/20 rounded-lg border border-orange-500/30">
+            <div className="flex items-center gap-2 text-orange-700">
+              <Zap className="w-4 h-4" />
+              <span className="text-sm font-medium">المصيدة مفعلة! جميع اللاعبين إمبوسترز!</span>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Start Button - Enhanced */}
       <div className="pt-2">

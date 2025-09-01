@@ -25,14 +25,16 @@ export default function RevealCard() {
     players,
     nextPlayer,
     hideL7aj,
+    trapActivated,
   } = useGame();
 
   const [revealed, setRevealed] = useState(false);
   // moved hold-to-reveal logic into reusable HoldRevealButton component
 
   // if imposterCount is 0 then there are no imposters this round
-  const isImposter = imposterCount && imposterCount > 0 ? currentPlayerIndex === imposterIndex : false;
-  const isL7aj = currentPlayerIndex === l7ajIndex;
+  // if trap is activated, everyone is an imposter
+  const isImposter = trapActivated || (imposterCount && imposterCount > 0 ? currentPlayerIndex === imposterIndex : false);
+  const isL7aj = !trapActivated && currentPlayerIndex === l7ajIndex;
   const currentPlayerName = players[currentPlayerIndex] || `اللاعب ${currentPlayerIndex + 1}`;
   const isLastPlayer = currentPlayerIndex === playerCount - 1;
 
@@ -90,14 +92,18 @@ export default function RevealCard() {
                 {isImposter ? (
                   <div className="flex flex-col items-center gap-3">
                     {/* <VenetianMask className="w-16 h-16 text-destructive" /> */}
-                    <h3 className="text-5xl font-bold text-primary tracking-tight">Imposter</h3>
+                    <h3 className="text-5xl font-bold text-primary tracking-tight">
+                      {trapActivated ? "لمصيدة! Imposter" : "Imposter"}
+                    </h3>
                     {imposterHint ? (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Lightbulb className="w-4 h-4" />
                         <span>تلميح: <span className="font-bold text-foreground">{hint}</span></span>
                       </div>
                     ) : (
-                      <div className="text-sm text-muted-foreground"></div>
+                      <div className="text-sm text-muted-foreground">
+                        {trapActivated && <span className="text-orange-600 font-medium">الجميع إمبوسترز!</span>}
+                      </div>
                     )}
                   </div>
                 ) : isL7aj ? (
