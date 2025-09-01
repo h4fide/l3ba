@@ -95,7 +95,7 @@ export default function RevealCard() {
                   <div className="flex flex-col items-center gap-3">
                     {/* <VenetianMask className="w-16 h-16 text-destructive" /> */}
                     <h3 className="text-5xl font-bold text-primary tracking-tight">
-                      {trapActivated ? "لمصيدة! Imposter" : "Imposter"}
+                      {trapActivated ? "Imposter" : "Imposter"}
                     </h3>
                     {(imposterHint || categoryHint) && (
                       <div className="space-y-2">
