@@ -61,8 +61,8 @@ export default function Setup() {
   <p className="text-muted-foreground text-xs">قم بإعداد اللعبة قبل البدء</p>
       </div>
 
-      {/* Player Count Tile - Enhanced */}
-      <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
+  {/* Player Count Tile */}
+  <div className="rounded-2xl border border-blue-500/80 p-5 transition-colors relative overflow-hidden bg-gradient-to-br from-blue-500/30 via-blue-600/20 to-black-600/60 hover:from-blue-500/45 hover:via-blue-600/35 hover:to-slate-600/70">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -82,7 +82,7 @@ export default function Setup() {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-xl flex-1 h-11"
+            className="rounded-xl flex-1 h-11 hover:bg-blue-500/25"
             onClick={() => setIsEditPlayersOpen(true)}
           >
             <Settings className="w-4 h-4 ml-2" />
@@ -91,8 +91,8 @@ export default function Setup() {
         </div>
       </div>
 
-      {/* Categories Tile - Enhanced */}
-      <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
+  {/* Categories Tile */}
+  <div className="rounded-2xl border border-slate-500/80 p-5 transition-colors relative overflow-hidden bg-gradient-to-br from-slate-500/30 via-slate-600/20 to-slate-700/60 hover:from-slate-500/45 hover:via-slate-600/35 hover:to-slate-700/70">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -110,7 +110,7 @@ export default function Setup() {
         </div>
         <Button
           variant="outline"
-          className="w-full rounded-xl h-12 justify-between group"
+          className="w-full rounded-xl h-12 justify-between group hover:bg-slate-500/45"
           onClick={() => setIsCategoriesModalOpen(true)}
         >
           <span className="font-medium">
@@ -128,8 +128,8 @@ export default function Setup() {
         )}
       </div>
 
-      {/* Imposters Row - Enhanced */}
-      <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
+  {/* Imposters Row */}
+  <div className="rounded-2xl border border-red-500/80 p-5 transition-colors relative overflow-hidden bg-gradient-to-br from-red-600/35 via-red-700/25 to-black/65 hover:from-red-600/50 hover:via-red-700/40 hover:to-black/75">
         <Sheet open={isImposterSheetOpen} onOpenChange={handleImposterSheetOpen}>
           <SheetTrigger asChild>
             <div className="flex items-center justify-between cursor-pointer group">
@@ -263,7 +263,6 @@ export default function Setup() {
           </div>
         </div>
       )}
-
 
       {/* Start Button - Enhanced */}
       <div className="pt-2">
