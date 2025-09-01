@@ -6,12 +6,12 @@ import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
-import { Users, MoreHorizontal, Lightbulb, Play, Settings, ChevronRight, AlertCircle, Group, VenetianMask, Drama, UserRoundPlusIcon, UserRoundPlus, EyeOffIcon, Zap } from "lucide-react";
+import { Users, MoreHorizontal, Lightbulb, Play, Settings, ChevronRight, AlertCircle, Group, VenetianMask, Drama, UserRoundPlusIcon, Eye, EyeOffIcon, Zap, Flame } from "lucide-react";
 import EditPlayersModal from "./EditPlayersModal";
 import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
 export default function Setup() {
-  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled, hideL7aj, setHideL7aj, trapEnabled, setTrapEnabled, trapActivated } = useGame();
+  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, categoryHint, setCategoryHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled, hideL7aj, setHideL7aj, trapEnabled, setTrapEnabled, trapActivated } = useGame();
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState(false);
   const [isImposterSheetOpen, setIsImposterSheetOpen] = useState(false);
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);
@@ -40,7 +40,7 @@ export default function Setup() {
   const handleStartGame = () => {
     if (selectedCategories.length === 0) return;
     // Pass the imposterCount directly: 0 = no imposters, >=1 explicit
-    setupGame(players.length, selectedCategories, imposterCount, imposterHint);
+    setupGame(players.length, selectedCategories, imposterCount, imposterHint, categoryHint);
   };
 
   const canStartGame = selectedCategories.length > 0 && players.length >= 3;
@@ -209,65 +209,124 @@ export default function Setup() {
         </Sheet>
       </div>
 
-      {/* Imposter Hint Switch - Enhanced (hidden when 0 imposters) */}
+      {/* Imposter Hint & Category Hint (independent) */}
       {imposterCount !== 0 && (
-        <div className="flex items-center justify-between cursor-pointer group">
-          <div className="rounded-2xl border bg-card p-5 hover:bg-accent">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Lightbulb className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <div className="font-semibold text-base"> التلميح</div>
-                  <div className="text-xs text-muted-foreground">
-                    يحصل الإمبوستر على معلومة إضافية
-                  </div>
-                </div>
-              </div>
-              <Switch
-                checked={imposterHint}
-                onCheckedChange={setImposterHint}
-                className="data-[state=checked]:bg-primary"
-              />
+        <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Lightbulb className="w-5 h-5 text-primary" />
             </div>
+            <div>
+              <div className="font-semibold text-base">التلميحات</div>
+              <div className="text-xs text-muted-foreground">
+                {imposterHint && categoryHint && 'يحصل الإمبوستر على تلميح و الفئة'}
+                {imposterHint && !categoryHint && 'يحصل الإمبوستر على تلميح فقط'}
+                {!imposterHint && categoryHint && 'يحصل الإمبوستر على الفئة فقط'}
+                {!imposterHint && !categoryHint && 'بدون تلميحات حالياً'}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {/* Toggle Hint */}
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => setImposterHint(!imposterHint)}
+              aria-label="تفعيل التلميح"
+              aria-pressed={imposterHint}
+              className={`relative overflow-hidden h-7 rounded-full flex items-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm
+                ${imposterHint
+                  ? 'bg-gradient-to-r from-emerald-500/90 to-green-600 text-white border-emerald-400/60 shadow-sm ring-1 ring-white/20'
+                  : 'bg-white/5 hover:bg-white/10 text-emerald-400 border-emerald-400/30'}
+              `}
+              variant={imposterHint ? 'default' : 'ghost'}
+            >
+              <Lightbulb className={`w-3.5 h-3.5 transition-transform ${imposterHint ? 'scale-110 drop-shadow-sm' : 'opacity-80'}`} />
+              <span>التلميح</span>
+              {imposterHint && (
+                <span className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_30%_30%,#ffffff33,transparent_60%)]" />
+              )}
+            </Button>
+            {/* Toggle Category */}
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => setCategoryHint(!categoryHint)}
+              aria-label="تفعيل تلميح الفئة"
+              aria-pressed={categoryHint}
+              className={`relative overflow-hidden h-7 rounded-full flex items-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm
+                ${categoryHint
+                  ? 'bg-gradient-to-r from-amber-500/90 to-orange-600 text-white border-orange-400/60 shadow-sm ring-1 ring-white/20'
+                  : 'bg-white/5 hover:bg-white/10 text-amber-400 border-amber-400/30'}
+              `}
+              variant={categoryHint ? 'default' : 'ghost'}
+            >
+              <Group className={`w-3.5 h-3.5 transition-transform ${categoryHint ? 'scale-110 drop-shadow-sm' : 'opacity-80'}`} />
+              <span>الفئة</span>
+              {categoryHint && (
+                <span className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_30%_30%,#ffffff33,transparent_60%)]" />
+              )}
+            </Button>
           </div>
         </div>
       )}
 
-      {/* L7aj (Mr. White) Switch - new role */}
+      {/* L7aj (Mr. White) role + hide option combined */}
       <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
               <Drama className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <div className="font-semibold text-base">لحاج</div>
-              <div className="text-xs text-muted-foreground">شخصية خاصة تحصل على كلمة منفصلة</div>
+              <div className="font-semibold text-base flex items-center gap-2">
+                لحاج
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {l7ajEnabled && (
+                <>
+                {hideL7aj 
+                  ? 'لاعب خاص ماعارفش أنه عندو كلمة مختلفة' 
+                  : 'لاعب خاص عندو كلمة مختلفة او عارف راسو هو الحاج' 
+                }
+                </>
+
+                )}
+              </div>
             </div>
           </div>
-          <Switch checked={l7ajEnabled} onCheckedChange={setL7ajEnabled} className="data-[state=checked]:bg-primary" />
+          <div className="flex items-center gap-2">
+            {l7ajEnabled && (
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => setHideL7aj(!hideL7aj)}
+                aria-label="تفعيل إخفاء لحاج"
+                aria-pressed={hideL7aj}
+                className={`relative overflow-hidden h-7 rounded-full flex items-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm
+                  ${hideL7aj
+                    ? 'bg-gradient-to-r from-rose-500/90 to-red-600 text-white border-red-400/60 shadow-sm ring-1 ring-white/20'
+                    : 'bg-white/5 hover:bg-white/10 text-red-400 border-red-400/30'}
+                `}
+                variant={hideL7aj ? 'default' : 'ghost'}
+              >
+                {hideL7aj ? (
+                  <EyeOffIcon className={`w-3.5 h-3.5 transition-transform ${hideL7aj ? 'scale-110 drop-shadow-sm' : 'opacity-80'}`} />
+                ) : (
+                  <Eye className="w-3.5 h-3.5 opacity-80" />
+                )}
+                <span className="flex items-center gap-1">
+                  {hideL7aj ? 'مخفي' : 'إخفاء'}
+                </span>
+                {hideL7aj && (
+                  <span className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_30%_30%,#ffffff33,transparent_60%)]" />
+                )}
+              </Button>
+            )}
+            <Switch checked={l7ajEnabled} onCheckedChange={setL7ajEnabled} className="data-[state=checked]:bg-primary" />
+          </div>
         </div>
       </div>
-
-      {/* Hide L7aj button/toggle when L7aj is enabled */}
-      {l7ajEnabled && (
-        <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <EyeOffIcon className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <div className="font-semibold text-base">إخفاء لحاج</div>
-                <div className="text-xs text-muted-foreground">اجعل اللاعب لا يعرف إذا كان لحاج أم لا</div>
-              </div>
-            </div>
-            <Switch checked={hideL7aj} onCheckedChange={setHideL7aj} className="data-[state=checked]:bg-primary" />
-          </div>
-        </div>
-      )}
 
       {/* Trap Feature - لمصيدة */}
       <div className="rounded-2xl border p-5">

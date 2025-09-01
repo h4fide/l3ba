@@ -21,6 +21,8 @@ interface GameContextType {
   setImposterCount: (n: number) => void;
   imposterHint: boolean;
   setImposterHint: (val: boolean) => void;
+  categoryHint: boolean;
+  setCategoryHint: (val: boolean) => void;
   l7ajEnabled: boolean;
   setL7ajEnabled: (val: boolean) => void;
   hideL7aj: boolean;
@@ -31,7 +33,7 @@ interface GameContextType {
   setTrapEnabled: (val: boolean) => void;
   trapActivated: boolean;
   randomizeSecretWord: (categories?: string[]) => { category: string | null; wordObj: Word | null } | void;
-  setupGame: (players: number, selectedCategories: string[], imposterCount: number, imposterHint: boolean) => void;
+  setupGame: (players: number, selectedCategories: string[], imposterCount: number, imposterHint: boolean, categoryHint?: boolean) => void;
   nextPlayer: () => void;
   restartGame: () => void;
   updatePlayers: (players: string[]) => void;
@@ -55,6 +57,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // imposterCount: 0 = no imposters, >=1 explicit number
   const [imposterCount, setImposterCount] = useState(1);
   const [imposterHint, setImposterHint] = useState(false);
+  const [categoryHint, setCategoryHint] = useState(false);
   const [l7ajEnabled, setL7ajEnabled] = useState(false);
   const [l7ajIndex, setL7ajIndex] = useState(-1);
   const [l7ajWord, setL7ajWord] = useState('');
@@ -108,6 +111,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      const rawCategoryHint = localStorage.getItem('l3ba_categoryHint');
+      if (rawCategoryHint !== null) {
+        setCategoryHint(JSON.parse(rawCategoryHint) as boolean);
+      }
+    } catch (e) {
+      console.warn('Failed to load category hint from localStorage:', e);
+    }
+
+    try {
       const rawL7 = localStorage.getItem('l3ba_l7ajEnabled');
       if (rawL7 !== null) {
         setL7ajEnabled(JSON.parse(rawL7) as boolean);
@@ -156,7 +168,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return { category: randomCategory, wordObj: randomWordObj };
   };
 
-  const setupGame = (players: number, selectedCategories: string[], impCount: number, hint: boolean) => {
+  const setupGame = (players: number, selectedCategories: string[], impCount: number, hint: boolean, catHint?: boolean) => {
     if (selectedCategories.length === 0) return;
     // Randomize secret word (and category/hint) from the selected categories and capture return
     const randomResult = randomizeSecretWord(selectedCategories) as { category: string | null; wordObj: Word | null } | void;
@@ -209,6 +221,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     // persist the chosen imposterCount for this round
     setImposterCount(resolvedImpCount);
     setImposterHint(hint);
+    if (catHint !== undefined) {
+      setCategoryHint(catHint);
+    }
     setGameState('roleReveal');
   };
 
@@ -285,6 +300,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
+      localStorage.setItem('l3ba_categoryHint', JSON.stringify(categoryHint));
+      console.log('Saved category hint to localStorage:', categoryHint);
+    } catch (e) {
+      console.error('Failed to save category hint to localStorage:', e);
+    }
+  }, [categoryHint]);
+
+  useEffect(() => {
+    try {
       localStorage.setItem('l3ba_l7ajEnabled', JSON.stringify(l7ajEnabled));
       console.log('Saved l7aj enabled to localStorage:', l7ajEnabled);
     } catch (e) {
@@ -326,6 +350,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   setImposterCount,
     imposterHint,
   setImposterHint,
+  categoryHint,
+  setCategoryHint,
   l7ajEnabled,
   setL7ajEnabled,
   hideL7aj,

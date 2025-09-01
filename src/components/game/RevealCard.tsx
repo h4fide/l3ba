@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useGame } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
 import HoldRevealButton from "@/components/ui/hold-reveal-button";
-import { VenetianMask, ChevronFirst, Lightbulb } from "lucide-react";
+import { VenetianMask, ChevronFirst, Lightbulb, Flame } from "lucide-react";
 
 // Animated version of the Chevron icon for the next / start discussion button
 const MotionChevronFirst = motion(ChevronFirst);
@@ -15,11 +15,13 @@ export default function RevealCard() {
   const {
     secretWord,
     hint,
+    category,
     imposterIndex,
     imposterCount,
     l7ajIndex,
     l7ajWord,
     imposterHint,
+    categoryHint,
     currentPlayerIndex,
     playerCount,
     players,
@@ -95,14 +97,25 @@ export default function RevealCard() {
                     <h3 className="text-5xl font-bold text-primary tracking-tight">
                       {trapActivated ? "لمصيدة! Imposter" : "Imposter"}
                     </h3>
-                    {imposterHint ? (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Lightbulb className="w-4 h-4" />
-                        <span>تلميح: <span className="font-bold text-foreground">{hint}</span></span>
+                    {(imposterHint || categoryHint) && (
+                      <div className="space-y-2">
+                        {imposterHint && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Lightbulb className="w-4 h-4" />
+                            <span>تلميح: <span className="font-bold text-foreground">{hint}</span></span>
+                          </div>
+                        )}
+                        {categoryHint && category && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Flame className="w-4 h-4" />
+                            <span>فئة: <span className="font-bold text-foreground">{category}</span></span>
+                          </div>
+                        )}
                       </div>
-                    ) : (
+                    )}
+                    {!imposterHint && trapActivated && (
                       <div className="text-sm text-muted-foreground">
-                        {trapActivated && <span className="text-orange-600 font-medium">الجميع إمبوسترز!</span>}
+                        <span className="text-orange-600 font-medium">الجميع إمبوسترز!</span>
                       </div>
                     )}
                   </div>
