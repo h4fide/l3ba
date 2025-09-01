@@ -161,25 +161,40 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Pick a random category + word from either the provided categories or the currently
-  // selectedCategories state. Exposed so the UI can re-randomize the secret word on demand.
+  // Pick a random word from all 800+ words first, then determine its category.
+  // Only considers words from the selected categories if specified.
   const randomizeSecretWord = (cats?: string[]) => {
     const poolCategories = cats && cats.length > 0 ? cats : selectedCategories;
     if (!poolCategories || poolCategories.length === 0) {
       console.error('No categories available to randomize secret word');
       return;
     }
-    const randomCategory = poolCategories[Math.floor(Math.random() * poolCategories.length)];
-    const wordPool = categories[randomCategory as Category] as Word[];
-    if (!wordPool || wordPool.length === 0) {
-      console.error('No words available for category:', randomCategory);
+
+    // Create a flat array of all words from selected categories with their category info
+    const allWords: Array<{ word: Word; category: string }> = [];
+    
+    poolCategories.forEach(categoryName => {
+      const wordPool = categories[categoryName as Category] as Word[];
+      if (wordPool && wordPool.length > 0) {
+        wordPool.forEach(wordObj => {
+          allWords.push({ word: wordObj, category: categoryName });
+        });
+      }
+    });
+
+    if (allWords.length === 0) {
+      console.error('No words available from selected categories');
       return;
     }
-    const randomWordObj = wordPool[Math.floor(Math.random() * wordPool.length)];
-    setCategory(randomCategory);
-    setSecretWord(randomWordObj.word);
-    setHint(randomWordObj.hint);
-    return { category: randomCategory, wordObj: randomWordObj };
+
+    // Pick a random word from all available words
+    const randomIndex = Math.floor(Math.random() * allWords.length);
+    const selectedWordData = allWords[randomIndex];
+    
+    setCategory(selectedWordData.category);
+    setSecretWord(selectedWordData.word.word);
+    setHint(selectedWordData.word.hint);
+    return { category: selectedWordData.category, wordObj: selectedWordData.word };
   };
 
   const setupGame = (playerCount: number, selectedCategories: string[], impCount: number, hint: boolean, catHint?: boolean) => {
@@ -226,15 +241,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
       if (chosenCategory) {
         const wordPool = categories[chosenCategory as Category] as Word[];
         if (wordPool && wordPool.length > 0) {
-          // try to pick a different word
-          let candidate = wordPool[Math.floor(Math.random() * wordPool.length)].word;
-          let tries = 0;
-          const secret = randomResult?.wordObj?.word || secretWord;
-          while ((candidate === secret || !candidate) && tries < 20) {
-            candidate = wordPool[Math.floor(Math.random() * wordPool.length)].word;
-            tries++;
+          // Create array of all words in this category except the secret word
+          const availableWords = wordPool.filter(wordObj => {
+            const secret = randomResult?.wordObj?.word || secretWord;
+            return wordObj.word !== secret;
+          });
+          
+          if (availableWords.length > 0) {
+            // Pick a random word from available options
+            const randomWordObj = availableWords[Math.floor(Math.random() * availableWords.length)];
+            chosenL7ajWord = randomWordObj.word;
+          } else {
+            // Fallback: if somehow no other words available, pick any word
+            const randomWordObj = wordPool[Math.floor(Math.random() * wordPool.length)];
+            chosenL7ajWord = randomWordObj.word;
           }
-          chosenL7ajWord = candidate;
         }
       }
     }

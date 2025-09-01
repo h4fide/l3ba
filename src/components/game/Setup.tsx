@@ -220,8 +220,8 @@ export default function Setup() {
 
       {/* Imposter Hint & Category Hint (independent) */}
       {imposterCount !== 0 && (
-        <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
               <Lightbulb className="w-5 h-5 text-primary" />
             </div>
@@ -235,7 +235,7 @@ export default function Setup() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col xs:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             {/* Toggle Hint */}
             <Button
               type="button"
@@ -243,7 +243,7 @@ export default function Setup() {
               onClick={() => setImposterHint(!imposterHint)}
               aria-label="تفعيل التلميح"
               aria-pressed={imposterHint}
-              className={`relative overflow-hidden h-7 rounded-full flex items-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm
+              className={`relative overflow-hidden h-8 rounded-full flex items-center justify-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm flex-1 sm:flex-initial
                 ${imposterHint
                   ? 'bg-gradient-to-r from-emerald-500/90 to-green-600 text-white border-emerald-400/60 shadow-sm ring-1 ring-white/20'
                   : 'bg-white/5 hover:bg-white/10 text-emerald-400 border-emerald-400/30'}
@@ -263,7 +263,7 @@ export default function Setup() {
               onClick={() => setCategoryHint(!categoryHint)}
               aria-label="تفعيل تلميح الفئة"
               aria-pressed={categoryHint}
-              className={`relative overflow-hidden h-7 rounded-full flex items-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm
+              className={`relative overflow-hidden h-8 rounded-full flex items-center justify-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm flex-1 sm:flex-initial
                 ${categoryHint
                   ? 'bg-gradient-to-r from-amber-500/90 to-orange-600 text-white border-orange-400/60 shadow-sm ring-1 ring-white/20'
                   : 'bg-white/5 hover:bg-white/10 text-amber-400 border-amber-400/30'}
