@@ -49,7 +49,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [imposterIndex, setImposterIndex] = useState(-1);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [firstPlayerIndex, setFirstPlayerIndex] = useState(0);
-  // imposterCount: -1 = auto/random, 0 = no imposters, >=1 explicit number
+  // imposterCount: 0 = no imposters, >=1 explicit number
   const [imposterCount, setImposterCount] = useState(1);
   const [imposterHint, setImposterHint] = useState(false);
   const [l7ajEnabled, setL7ajEnabled] = useState(false);
@@ -84,8 +84,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const rawImpCount = localStorage.getItem('l3ba_imposterCount');
       if (rawImpCount) {
         const parsed = parseInt(rawImpCount, 10);
-        // allow -1 to represent 'auto/random', 0 = no imposters, 1..3 explicit
-        if (!Number.isNaN(parsed) && parsed >= -1 && parsed <= 3) {
+        // allow 0 = no imposters, 1..3 explicit
+        if (!Number.isNaN(parsed) && parsed >= 0 && parsed <= 3) {
           setImposterCount(parsed);
         }
       }
@@ -146,49 +146,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (selectedCategories.length === 0) return;
     // Randomize secret word (and category/hint) from the selected categories and capture return
     const randomResult = randomizeSecretWord(selectedCategories) as { category: string | null; wordObj: Word | null } | void;
-  // Resolve imposter count: impCount === -1 means 'auto/random' -> pick with a weighted random
-  // so most rounds have 1 imposter, and 2 or 3 are rarer depending on player count.
-  let resolvedImpCount = impCount;
-  if (impCount === -1) {
-      // Determine an upper bound like before but we'll pick randomly with a bias toward 1.
-      let baseMax = 1;
-      if (players <= 5) baseMax = 2; // small groups can rarely have 2
-      else if (players <= 10) baseMax = 2;
-      else baseMax = 3;
-
-      const maxImposters = Math.min(baseMax, Math.max(1, players - 1));
-
-      // Build options [1..maxImposters] and choose with weights that favor 1
-      const options: number[] = [];
-      for (let i = 1; i <= maxImposters; i++) options.push(i);
-
-      // Default weight sets (they will be trimmed to options length)
-      let weights: number[] = [];
-      if (maxImposters === 1) {
-        weights = [1];
-      } else if (maxImposters === 2) {
-        // For very small groups prefer 1 even more aggressively
-        weights = players <= 5 ? [0.95, 0.05] : [0.85, 0.15];
-      } else {
-        // 3 options: skew toward 1, rare 3
-        weights = [0.6, 0.3, 0.1];
-      }
-
-      weights = weights.slice(0, options.length);
-      const total = weights.reduce((a, b) => a + b, 0);
-      let r = Math.random() * total;
-      let acc = 0;
-      for (let i = 0; i < options.length; i++) {
-        acc += weights[i];
-        if (r <= acc) {
-          resolvedImpCount = options[i];
-          break;
-        }
-      }
-
-  // Fallback to 1 if something odd happens
-  if (!resolvedImpCount && resolvedImpCount !== 0) resolvedImpCount = 1;
-    }
+    
+    // Use the imposter count directly (no random logic)
+    const resolvedImpCount = impCount;
     const randomImposter = Math.floor(Math.random() * players);
     let randomL7aj = -1;
     let chosenL7ajWord = '';
@@ -226,8 +186,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setL7ajWord(chosenL7ajWord);
     setFirstPlayerIndex(randomFirstPlayer);
     setCurrentPlayerIndex(0);
-  // persist the chosen imposterCount for this round (if auto was requested, save the resolved value)
-  setImposterCount(resolvedImpCount);
+    // persist the chosen imposterCount for this round
+    setImposterCount(resolvedImpCount);
     setImposterHint(hint);
     setGameState('roleReveal');
   };

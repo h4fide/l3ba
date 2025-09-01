@@ -19,8 +19,8 @@ export default function Setup() {
 
   // Ensure default selection for imposters is 1 on first load
   useEffect(() => {
-    // Initialize to 1 if value is unset
-    if (imposterCount === undefined || imposterCount === null) {
+    // Initialize to 1 if value is unset or was previously set to random (-1)
+    if (imposterCount === undefined || imposterCount === null || imposterCount === -1) {
       setImposterCount(1);
     }
     // only run on mount
@@ -39,15 +39,14 @@ export default function Setup() {
 
   const handleStartGame = () => {
     if (selectedCategories.length === 0) return;
-  // Pass the imposterCount directly: -1 = auto/random, 0 = no imposters, >=1 explicit
-  setupGame(players.length, selectedCategories, imposterCount, imposterHint);
+    // Pass the imposterCount directly: 0 = no imposters, >=1 explicit
+    setupGame(players.length, selectedCategories, imposterCount, imposterHint);
   };
 
   const canStartGame = selectedCategories.length > 0 && players.length >= 3;
-  // Resolve and display imposter count when 'عشوائي' (-1) is selected.
-  const resolvedAutoImposter = players.length <= 5 ? 1 : players.length <= 10 ? 2 : 3;
-  const displayImposterCount = imposterCount === -1 ? resolvedAutoImposter : imposterCount;
-  const displayImposterLabel = imposterCount === -1 ? 'عشوائي' : String(displayImposterCount);
+  // Display imposter count directly
+  const displayImposterCount = imposterCount;
+  const displayImposterLabel = String(displayImposterCount);
 
 
   // Build available imposter choices based on players count (max = players-1), cap to 6 for UI
@@ -140,13 +139,13 @@ export default function Setup() {
                 <div>
                         <div className="font-semibold text-base">فوضى</div>
                         <div className="text-xs text-muted-foreground">
-                          {imposterCount === -1 ? 'عشوائي' : displayImposterCount === 1 ? 'إمبوستر واحد' : `${displayImposterCount} إمبوسترز`}
+                          {displayImposterCount === 1 ? 'إمبوستر واحد' : `${displayImposterCount} إمبوسترز`}
                         </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-primary">{imposterCount === -1 ? '؟' : displayImposterCount}</div>
+                  <div className="text-3xl font-bold text-primary">{displayImposterCount}</div>
                   <p className="text-[0.7rem] text-muted-foreground">إمبوستر</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1" />
@@ -160,17 +159,6 @@ export default function Setup() {
             </SheetHeader>
             <div className="grid grid-cols-3 gap-4 mt-6 pb-4">
               <div className="col-span-3 grid grid-cols-3 gap-4">
-                <Button
-                  variant={imposterCount === -1 ? "default" : "outline"}
-                  className="rounded-xl py-8 flex flex-col gap-1"
-                  onClick={() => {
-                    setImposterCount(-1);
-                    setIsImposterSheetOpen(false);
-                  }}
-                >
-                  <span className="text-2xl font-bold">؟</span>
-                  <span className="text-[0.7rem] opacity-70">عشوائي</span>
-                </Button>
                 <Button
                   variant={imposterCount === 0 ? "default" : "outline"}
                   className="rounded-xl py-8 flex flex-col gap-1"
