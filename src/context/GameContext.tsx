@@ -161,8 +161,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     // Randomize secret word (and category/hint) from the selected categories and capture return
     const randomResult = randomizeSecretWord(selectedCategories) as { category: string | null; wordObj: Word | null } | void;
     
-    // Check if trap should be activated (rare occurrence - 5% chance when trap is enabled)
-    const shouldActivateTrap = trapEnabled && Math.random() < 0.05;
+    // Check if trap should be activated (rare occurrence - 10% chance when trap is enabled)
+    const shouldActivateTrap = trapEnabled && Math.random() < 0.10;
     setTrapActivated(shouldActivateTrap);
     
     // Use the imposter count directly (no random logic), but if trap is activated, make all players imposters

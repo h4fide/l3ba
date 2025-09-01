@@ -261,7 +261,7 @@ export default function Setup() {
             </div>
             <div>
               <div className="font-semibold text-base">لمصيدة</div>
-              <div className="text-xs text-muted-foreground">فرصة نادرة لجعل جميع اللاعبين إمبوسترز (5%)</div>
+              <div className="text-xs text-muted-foreground">فشي جولات معينة كولشي يقدر يولي إمبوستر</div>
             </div>
           </div>
           <Switch checked={trapEnabled} onCheckedChange={setTrapEnabled} className="data-[state=checked]:bg-orange-500" />
