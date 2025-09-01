@@ -264,24 +264,6 @@ export default function Setup() {
         </div>
       )}
 
-      {/* Game Summary Card */}
-      {/* <div className="rounded-2xl border bg-muted/30 p-4">
-        <h3 className="font-semibold mb-3 text-center">ملخص اللعبة</h3>
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-lg font-bold text-primary">{players.length}</div>
-            <div className="text-xs text-muted-foreground">لاعب</div>
-          </div>
-          <div>
-            <div className="text-lg font-bold text-primary">{selectedCategories.length}</div>
-            <div className="text-xs text-muted-foreground">فئة</div>
-          </div>
-          <div>
-            <div className="text-lg font-bold text-primary">{imposterCount === 0 ? '؟' : displayImposterCount}</div>
-            <div className="text-xs text-muted-foreground">إمبوستر</div>
-          </div>
-        </div>
-      </div> */}
 
       {/* Start Button - Enhanced */}
       <div className="pt-2">

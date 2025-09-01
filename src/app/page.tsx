@@ -34,9 +34,9 @@ function GameView() {
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center p-4">
       {gameState === 'setup' && (
         <header className="w-full text-center my-8">
-          <h1 className="text-6xl md:text-7xl font-bold text-primary font-headline tracking-tighter">
+          {/* <h1 className="text-6xl md:text-7xl font-bold text-primary font-headline tracking-tighter">
             L3ba
-          </h1>
+          </h1> */}
           {/* <p className="text-muted-foreground mt-2 text-lg">لعبة  </p> */}
         </header>
       )}
