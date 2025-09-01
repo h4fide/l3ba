@@ -62,8 +62,8 @@ export default function Setup() {
   <div className="rounded-2xl border border-blue-500/80 p-5 transition-colors relative overflow-hidden bg-gradient-to-br from-blue-500/30 via-blue-600/20 to-black-600/60 hover:from-blue-500/45 hover:via-blue-600/35 hover:to-slate-600/70">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-full bg-sky-500/10 flex items-center justify-center">
+              <Users className="w-5 h-5 text-sky-500" />
             </div>
             <div>
               <span className="font-semibold text-base">اللاعبين</span>
@@ -71,7 +71,7 @@ export default function Setup() {
             </div>
           </div>
           <div className="text-right">
-            <span className="text-3xl font-bold text-primary">{players.length}</span>
+            <span className="text-3xl font-bold text-sky-400">{players.length}</span>
             <p className="text-[0.7rem] text-muted-foreground">لاعب</p>
           </div>
         </div>
@@ -209,22 +209,19 @@ export default function Setup() {
 
       {/* Imposter Hint & Category Hint (independent) */}
       {imposterCount !== 0 && (
-        <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Lightbulb className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <div className="font-semibold text-base">التلميحات</div>
-              <div className="text-xs text-muted-foreground">
-                {imposterHint && categoryHint && 'يحصل الإمبوستر على تلميح و الفئة'}
-                {imposterHint && !categoryHint && 'يحصل الإمبوستر على تلميح فقط'}
-                {!imposterHint && categoryHint && 'يحصل الإمبوستر على الفئة فقط'}
-                {!imposterHint && !categoryHint && 'بدون تلميحات حالياً'}
-              </div>
+        <div className="rounded-2xl border p-5 relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {/* Watermark */}
+          <Lightbulb className="absolute top-3 right-3 w-24 h-24 opacity-15 pointer-events-none text-primary transform rotate-12 z-[-10]" />
+          <div className="w-full sm:w-auto relative z-10">
+            <div className="font-semibold text-base">التلميحات</div>
+            <div className="text-xs text-muted-foreground">
+              {imposterHint && categoryHint && 'يحصل الإمبوستر على تلميح و الفئة'}
+              {imposterHint && !categoryHint && 'يحصل الإمبوستر على تلميح فقط'}
+              {!imposterHint && categoryHint && 'يحصل الإمبوستر على الفئة فقط'}
+              {!imposterHint && !categoryHint && 'بدون تلميحات حالياً'}
             </div>
           </div>
-          <div className="flex flex-col xs:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-col xs:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto relative z-10">
             {/* Toggle Hint */}
             <Button
               type="button"
@@ -270,12 +267,10 @@ export default function Setup() {
       )}
 
       {/* L7aj (Mr. White) role + hide option combined */}
-      <div className="rounded-2xl border bg-card p-5 hover:bg-accent/5">
+      <div className="rounded-2xl border p-5 relative overflow-hidden">
+        <Drama className="absolute top-3 right-3 w-24 h-24 opacity-15 pointer-events-none text-primary transform rotate-12 z-[-10]" />
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Drama className="w-5 h-5 text-primary" />
-            </div>
             <div>
               <div className="font-semibold text-base flex items-center gap-2">لحاج</div>
               <div className="text-xs text-muted-foreground min-h-[1.1rem]">
@@ -321,12 +316,11 @@ export default function Setup() {
       </div>
 
       {/* Trap Feature - لمصيدة */}
-      <div className="rounded-2xl border p-5">
+      <div className="rounded-2xl border p-5 relative overflow-hidden">
+        {/* background corner icon */}
+        <Zap className="absolute top-3 right-3 w-24 h-24 opacity-15 pointer-events-none text-primary transform rotate-12 z-[-10]" />
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-primary" />
-            </div>
             <div>
               <div className="font-semibold text-base">لمصيدة</div>
               <div className="text-xs text-muted-foreground pl-3">فشي جولات معينة كولشي يقدر يولي إمبوستر</div>
