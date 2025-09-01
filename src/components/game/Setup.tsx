@@ -59,11 +59,11 @@ export default function Setup() {
       </div>
 
   {/* Player Count Tile */}
-  <div className="rounded-2xl border border-blue-500/80 p-5 transition-colors relative overflow-hidden bg-gradient-to-br from-blue-500/30 via-blue-600/20 to-black-600/60 hover:from-blue-500/45 hover:via-blue-600/35 hover:to-slate-600/70">
+  <div className="rounded-2xl border border-rose-500/80 p-5 transition-colors relative overflow-hidden bg-gradient-to-br from-rose-500/30 via-rose-600/20 to-black-600/60 hover:from-rose-500/45 hover:via-rose-600/35">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-sky-500/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-sky-500" />
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Users className="w-5 h-5 text-rose-500" />
             </div>
             <div>
               <span className="font-semibold text-base">اللاعبين</span>
@@ -71,7 +71,7 @@ export default function Setup() {
             </div>
           </div>
           <div className="text-right">
-            <span className="text-3xl font-bold text-sky-400">{players.length}</span>
+            <span className="text-3xl font-bold text-rose-200">{players.length}</span>
             <p className="text-[0.7rem] text-muted-foreground">لاعب</p>
           </div>
         </div>
@@ -79,7 +79,7 @@ export default function Setup() {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-xl flex-1 h-11 hover:bg-blue-500/25 border border-white/50"
+            className="rounded-xl flex-1 h-11 hover:bg-rose-500/25 border border-white/50"
             onClick={() => setIsEditPlayersOpen(true)}
           >
             <Settings className="w-4 h-4 ml-2" />
@@ -211,7 +211,8 @@ export default function Setup() {
       {imposterCount !== 0 && (
         <div className="rounded-2xl border p-5 relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           {/* Watermark */}
-          <Lightbulb className="absolute top-3 right-3 w-24 h-24 opacity-15 pointer-events-none text-primary transform rotate-12 z-[-10]" />
+          {/* <Group className="absolute top-35 right-0 w-24 h-24 opacity-10 pointer-events-none text-primary transform rotate-[16deg] z-[-10]" /> */}
+          <Lightbulb className="absolute top-10 right-0 w-24 h-24 opacity-10 pointer-events-none text-primary transform rotate-[-12deg] z-[-10]" />
           <div className="w-full sm:w-auto relative z-10">
             <div className="font-semibold text-base">التلميحات</div>
             <div className="text-xs text-muted-foreground">

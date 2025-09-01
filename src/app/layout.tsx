@@ -3,6 +3,7 @@ import "./globals.css";
 import "./fonts.css";
 import { Toaster } from "@/components/ui/toaster";
 import RegisterSWClient from "@/components/pwa/RegisterSWClient";
+import BackgroundDecor from '@/components/ui/BackgroundDecor';
 
 export const metadata: Metadata = {
   title: "L3ba",
@@ -24,9 +25,10 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body className="font-body antialiased">
-        {children}
-        <RegisterSWClient />
-        <Toaster />
+  <BackgroundDecor />
+  {children}
+  <RegisterSWClient />
+  <Toaster />
       </body>
     </html>
   );
