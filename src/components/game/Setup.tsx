@@ -11,7 +11,7 @@ import EditPlayersModal from "./EditPlayersModal";
 import ChooseCategoriesModal from "./ChooseCategoriesModal";
 
 export default function Setup() {
-  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, categoryHint, setCategoryHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled, hideL7aj, setHideL7aj, trapEnabled, setTrapEnabled, trapActivated } = useGame();
+  const { setupGame, players, updatePlayers, selectedCategories, updateSelectedCategories, imposterHint, setImposterHint, categoryHint, setCategoryHint, imposterCount, setImposterCount, l7ajEnabled, setL7ajEnabled, hideL7aj, setHideL7aj, trapEnabled, setTrapEnabled, trapActivated, saveCurrentSettings } = useGame();
   const [isPlayerSheetOpen, setIsPlayerSheetOpen] = useState(false);
   const [isImposterSheetOpen, setIsImposterSheetOpen] = useState(false);
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);
@@ -26,6 +26,15 @@ export default function Setup() {
     // only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Auto-save settings when they change (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      saveCurrentSettings();
+    }, 500); // Debounce for 500ms
+    
+    return () => clearTimeout(timeoutId);
+  }, [players, selectedCategories, imposterCount, imposterHint, categoryHint, l7ajEnabled, hideL7aj, trapEnabled, saveCurrentSettings]);
 
   // Open handler for the imposter sheet: ensure default selection is 1 when opening
   const handleImposterSheetOpen = (open: boolean) => {

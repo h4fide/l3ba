@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export default function DiscussionScreen() {
-  const { setGameState, restartGame, players } = useGame();
+  const { setGameState, restartGame, players, restoreToSavedSettings } = useGame();
   const [startingPlayerIndex, setStartingPlayerIndex] = useState(0);
 
   useEffect(() => {
@@ -67,7 +67,10 @@ export default function DiscussionScreen() {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                <AlertDialogAction onClick={restartGame}>نعم، ابدأ</AlertDialogAction>
+                <AlertDialogAction onClick={() => {
+                  restoreToSavedSettings();
+                  restartGame();
+                }}>نعم، ابدأ</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

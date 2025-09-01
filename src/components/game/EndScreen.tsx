@@ -6,7 +6,7 @@ import { Confetti } from "@/components/ui/Confetti";
 import { ShieldAlert, RotateCcw, Crown, Zap } from "lucide-react";
 
 export default function EndScreen() {
-  const { secretWord, imposterIndex, imposterCount, restartGame, players, l7ajEnabled, l7ajIndex, l7ajWord, hideL7aj, trapActivated } = useGame();
+  const { secretWord, imposterIndex, imposterCount, restartGame, players, l7ajEnabled, l7ajIndex, l7ajWord, hideL7aj, trapActivated, restoreToSavedSettings } = useGame();
 
   return (
     <div className="w-full max-w-md mx-auto space-y-4 p-4 min-h-screen flex flex-col justify-center">
@@ -159,7 +159,10 @@ export default function EndScreen() {
       {/* Restart Button */}
       <div className="pt-2">
         <Button 
-          onClick={restartGame} 
+          onClick={() => {
+            restoreToSavedSettings();
+            restartGame();
+          }} 
           className="w-full text-xl py-8 rounded-2xl font-bold"
           size="lg"
         >

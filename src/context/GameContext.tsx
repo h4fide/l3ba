@@ -5,6 +5,17 @@ import { categories, Category, Word } from '@/data/words';
 
 type GameState = 'setup' | 'roleReveal' | 'discussion' | 'end';
 
+interface SavedSettings {
+  players: string[];
+  selectedCategories: string[];
+  imposterCount: number;
+  imposterHint: boolean;
+  categoryHint: boolean;
+  l7ajEnabled: boolean;
+  hideL7aj: boolean;
+  trapEnabled: boolean;
+}
+
 interface GameContextType {
   gameState: GameState;
   setGameState: (state: GameState) => void;
@@ -33,11 +44,13 @@ interface GameContextType {
   setTrapEnabled: (val: boolean) => void;
   trapActivated: boolean;
   randomizeSecretWord: (categories?: string[]) => { category: string | null; wordObj: Word | null } | void;
-  setupGame: (players: number, selectedCategories: string[], imposterCount: number, imposterHint: boolean, categoryHint?: boolean) => void;
+  setupGame: (playerCount: number, selectedCategories: string[], imposterCount: number, imposterHint: boolean, categoryHint?: boolean) => void;
   nextPlayer: () => void;
   restartGame: () => void;
   updatePlayers: (players: string[]) => void;
   updateSelectedCategories: (categories: string[]) => void;
+  saveCurrentSettings: () => void;
+  restoreToSavedSettings: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -64,6 +77,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [hideL7aj, setHideL7aj] = useState(false);
   const [trapEnabled, setTrapEnabled] = useState(false);
   const [trapActivated, setTrapActivated] = useState(false);
+  const [savedSettings, setSavedSettings] = useState<SavedSettings | null>(null);
 
   // Read persisted state from localStorage only on the client after mount to avoid
   // server/client rendering differences that cause hydration mismatches.
@@ -168,8 +182,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return { category: randomCategory, wordObj: randomWordObj };
   };
 
-  const setupGame = (players: number, selectedCategories: string[], impCount: number, hint: boolean, catHint?: boolean) => {
+  const setupGame = (playerCount: number, selectedCategories: string[], impCount: number, hint: boolean, catHint?: boolean) => {
     if (selectedCategories.length === 0) return;
+    
+    // Save current settings before starting the game
+    const currentSettings: SavedSettings = {
+      players: [...players],
+      selectedCategories: [...selectedCategories],
+      imposterCount: impCount,
+      imposterHint: hint,
+      categoryHint: catHint || categoryHint,
+      l7ajEnabled,
+      hideL7aj,
+      trapEnabled
+    };
+    setSavedSettings(currentSettings);
+    
     // Randomize secret word (and category/hint) from the selected categories and capture return
     const randomResult = randomizeSecretWord(selectedCategories) as { category: string | null; wordObj: Word | null } | void;
     
@@ -178,18 +206,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setTrapActivated(shouldActivateTrap);
     
     // Use the imposter count directly (no random logic), but if trap is activated, make all players imposters
-    const resolvedImpCount = shouldActivateTrap ? players : impCount;
-    const randomImposter = Math.floor(Math.random() * players);
+    const resolvedImpCount = shouldActivateTrap ? playerCount : impCount;
+    const randomImposter = Math.floor(Math.random() * playerCount);
     let randomL7aj = -1;
     let chosenL7ajWord = '';
     
     // L7aj logic (only if trap is not activated and l7aj is enabled)
     if (l7ajEnabled && !shouldActivateTrap) {
       // pick a different player index for l7aj
-      randomL7aj = Math.floor(Math.random() * players);
+      randomL7aj = Math.floor(Math.random() * playerCount);
       let attempts = 0;
       while (randomL7aj === randomImposter && attempts < 10) {
-        randomL7aj = Math.floor(Math.random() * players);
+        randomL7aj = Math.floor(Math.random() * playerCount);
         attempts++;
       }
 
@@ -210,8 +238,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         }
       }
     }
-    const randomFirstPlayer = Math.floor(Math.random() * players);
-    setPlayerCount(players);
+    const randomFirstPlayer = Math.floor(Math.random() * playerCount);
+    setPlayerCount(playerCount);
     setSelectedCategories(selectedCategories);
     setImposterIndex(randomImposter);
     setL7ajIndex(randomL7aj);
@@ -244,20 +272,58 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setSelectedCategories(categories);
   };
 
+  const saveCurrentSettings = () => {
+    const currentSettings: SavedSettings = {
+      players: [...players],
+      selectedCategories: [...selectedCategories],
+      imposterCount,
+      imposterHint,
+      categoryHint,
+      l7ajEnabled,
+      hideL7aj,
+      trapEnabled
+    };
+    setSavedSettings(currentSettings);
+  };
+
+  const restoreToSavedSettings = () => {
+    if (savedSettings) {
+      setPlayers(savedSettings.players);
+      setSelectedCategories(savedSettings.selectedCategories);
+      setImposterCount(savedSettings.imposterCount);
+      setImposterHint(savedSettings.imposterHint);
+      setCategoryHint(savedSettings.categoryHint);
+      setL7ajEnabled(savedSettings.l7ajEnabled);
+      setHideL7aj(savedSettings.hideL7aj);
+      setTrapEnabled(savedSettings.trapEnabled);
+      setPlayerCount(savedSettings.players.length);
+    }
+  };
+
   const restartGame = () => {
-    // Keep players and selected categories persisted between plays.
+    // Restore saved settings if available
+    if (savedSettings) {
+      setPlayers(savedSettings.players);
+      setSelectedCategories(savedSettings.selectedCategories);
+      setImposterCount(savedSettings.imposterCount);
+      setImposterHint(savedSettings.imposterHint);
+      setCategoryHint(savedSettings.categoryHint);
+      setL7ajEnabled(savedSettings.l7ajEnabled);
+      setHideL7aj(savedSettings.hideL7aj);
+      setTrapEnabled(savedSettings.trapEnabled);
+      setPlayerCount(savedSettings.players.length);
+    }
+    
+    // Reset game state
     setGameState('setup');
-    // Ensure playerCount matches the current players array
-    setPlayerCount(players.length || 3);
     setCategory(null);
     setSecretWord('');
     setHint('');
     setImposterIndex(-1);
     setCurrentPlayerIndex(0);
     setTrapActivated(false);
-    // Don't reset imposterCount and imposterHint - keep them persisted
-    // setImposterCount(1);
-    // setImposterHint(false);
+    setL7ajIndex(-1);
+    setL7ajWord('');
   };
 
   // Persist players and selectedCategories to localStorage when they change
@@ -367,6 +433,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     restartGame,
     updatePlayers,
     updateSelectedCategories,
+    saveCurrentSettings,
+    restoreToSavedSettings,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
