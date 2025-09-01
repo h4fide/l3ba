@@ -60,7 +60,7 @@ function GameView() {
 
       {gameState === 'setup' && (
         <Button variant="link" onClick={() => setStrategyModalOpen(true)} className="mt-8 text-lg">
-          كيف تلعب؟
+          كيف نلعب؟
         </Button>
       )}
 
