@@ -6,7 +6,7 @@ import { Confetti } from "@/components/ui/Confetti";
 import { ShieldAlert, RotateCcw, Crown, Zap } from "lucide-react";
 
 export default function EndScreen() {
-  const { secretWord, imposterIndex, imposterCount, restartGame, players, l7ajEnabled, l7ajIndex, l7ajWord, hideL7aj, trapActivated, restoreToSavedSettings } = useGame();
+  const { secretWord, imposterIndices, imposterCount, restartGame, players, l7ajEnabled, l7ajIndex, l7ajWord, hideL7aj, trapActivated, restoreToSavedSettings } = useGame();
 
   return (
     <div className="w-full max-w-md mx-auto space-y-4 p-4 min-h-screen flex flex-col justify-center">
@@ -93,15 +93,30 @@ export default function EndScreen() {
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-2">
-                  <ShieldAlert className="w-6 h-6" />
-                  <span>
-                    {imposterIndex >= 0 && imposterIndex < players.length ? players[imposterIndex] : '—'}
-                  </span>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="w-6 h-6" />
+                    <span>
+                      {imposterIndices.length > 0 ? (
+                        imposterIndices.length === 1 ? (
+                          players[imposterIndices[0]] || '—'
+                        ) : (
+                          `${imposterIndices.length} إمبوسترز`
+                        )
+                      ) : '—'}
+                    </span>
+                  </div>
+                  {imposterIndices.length > 1 && (
+                    <div className="text-sm text-muted-foreground">
+                      {imposterIndices.map((index, i) => (
+                        <span key={index}>
+                          {players[index] || `اللاعب ${index + 1}`}
+                          {i < imposterIndices.length - 1 ? ', ' : ''}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {imposterCount > 1 && (
-                  <div className="text-sm text-muted-foreground">و {imposterCount - 1} من الآخرين</div>
-                )}
               </>
             )}
           </div>

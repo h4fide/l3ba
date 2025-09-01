@@ -10,7 +10,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Pencil, Plus, X } from "lucide-react";
+import { Pencil, Plus, X, AlertTriangle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface EditPlayersModalProps {
   open: boolean;
@@ -30,6 +31,7 @@ export default function EditPlayersModal({
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingName, setEditingName] = useState("");
   const cancelEditButtonRef = useRef<HTMLButtonElement | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (open) {
@@ -38,8 +40,25 @@ export default function EditPlayersModal({
   }, [open, initialPlayers]);
 
   const handleAddPlayer = () => {
-    if (newPlayerName.trim() && players.length < 20) {
-      setPlayers([...players, newPlayerName.trim()]);
+    const trimmedName = newPlayerName.trim();
+    if (trimmedName && players.length < 20) {
+      // Check if name already exists
+      const existingIndex = players.findIndex(player => player.trim().toLowerCase() === trimmedName.toLowerCase());
+      
+      if (existingIndex !== -1) {
+        // Remove the existing duplicate and add the new one at the end
+        const updatedPlayers = players.filter((_, index) => index !== existingIndex);
+        setPlayers([...updatedPlayers, trimmedName]);
+
+        toast({
+          title: "تنبيه : اسم مكرر",
+          description: `الاسم "${trimmedName}" موجود بالفعل.`,
+          variant: "destructive",
+        });
+      } else {
+        // No duplicate, just add normally
+        setPlayers([...players, trimmedName]);
+      }
       setNewPlayerName("");
     }
   };
@@ -61,8 +80,34 @@ export default function EditPlayersModal({
 
   const handleSaveEdit = () => {
     if (editingIndex !== null && editingName.trim()) {
-      const updatedPlayers = [...players];
-      updatedPlayers[editingIndex] = editingName.trim();
+      const trimmedName = editingName.trim();
+      
+      // Check if the new name conflicts with another player (excluding the current one being edited)
+      const existingIndex = players.findIndex((player, index) => 
+        index !== editingIndex && player.trim().toLowerCase() === trimmedName.toLowerCase()
+      );
+      
+      let updatedPlayers = [...players];
+      
+      if (existingIndex !== -1) {
+        // Remove the existing duplicate first
+        const duplicateName = players[existingIndex];
+        updatedPlayers = updatedPlayers.filter((_, index) => index !== existingIndex);
+        // Adjust editingIndex if the removed item was before it
+        const adjustedIndex = existingIndex < editingIndex ? editingIndex - 1 : editingIndex;
+        updatedPlayers[adjustedIndex] = trimmedName;
+        
+        // Show warning toast
+        toast({
+          title: "تنبيه: اسم مكرر",
+          description: `تم العثور على اسم مكرر "${duplicateName}". تم تحديث الاسم وإزالة النسخة القديمة.`,
+          variant: "destructive",
+        });
+      } else {
+        // No duplicate, just update normally
+        updatedPlayers[editingIndex] = trimmedName;
+      }
+      
       setPlayers(updatedPlayers);
       setEditingIndex(null);
       setEditingName("");

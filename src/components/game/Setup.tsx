@@ -17,26 +17,19 @@ export default function Setup() {
   const [isEditPlayersOpen, setIsEditPlayersOpen] = useState(false);
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
 
-  // Ensure default selection for imposters is 1 on first load
   useEffect(() => {
-    // Initialize to 1 if value is unset or was previously set to random (-1)
     if (imposterCount === undefined || imposterCount === null || imposterCount === -1) {
       setImposterCount(1);
     }
-    // only run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Auto-save settings when they change (debounced)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       saveCurrentSettings();
-    }, 500); // Debounce for 500ms
+    }, 500); 
     
     return () => clearTimeout(timeoutId);
   }, [players, selectedCategories, imposterCount, imposterHint, categoryHint, l7ajEnabled, hideL7aj, trapEnabled, saveCurrentSettings]);
 
-  // Open handler for the imposter sheet: ensure default selection is 1 when opening
   const handleImposterSheetOpen = (open: boolean) => {
     if (open) {
       if (imposterCount === -1 || imposterCount === undefined || imposterCount === null) {
@@ -48,17 +41,13 @@ export default function Setup() {
 
   const handleStartGame = () => {
     if (selectedCategories.length === 0) return;
-    // Pass the imposterCount directly: 0 = no imposters, >=1 explicit
     setupGame(players.length, selectedCategories, imposterCount, imposterHint, categoryHint);
   };
 
   const canStartGame = selectedCategories.length > 0 && players.length >= 3;
-  // Display imposter count directly
   const displayImposterCount = imposterCount;
   const displayImposterLabel = String(displayImposterCount);
 
-
-  // Build available imposter choices based on players count (max = players-1), cap to 6 for UI
   const maxSelectable = Math.max(0, Math.min(players.length - 1, 6));
   const availableCounts = Array.from({ length: maxSelectable }, (_, i) => i + 1);
 
@@ -250,7 +239,7 @@ export default function Setup() {
               `}
               variant={imposterHint ? 'default' : 'ghost'}
             >
-              <Lightbulb className={`w-3.5 h-3.5 transition-transform ${imposterHint ? 'scale-110 drop-shadow-sm' : 'opacity-80'}`} />
+              <Lightbulb className={`w-3 h-3 transition-transform ${imposterHint ? 'scale-110 drop-shadow-sm' : 'opacity-80'}`} />
               <span>التلميح</span>
               {imposterHint && (
                 <span className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_30%_30%,#ffffff33,transparent_60%)]" />
@@ -288,18 +277,14 @@ export default function Setup() {
               <Drama className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <div className="font-semibold text-base flex items-center gap-2">
-                لحاج
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {l7ajEnabled && (
-                <>
-                {hideL7aj 
-                  ? 'لاعب خاص ماعارفش أنه عندو كلمة مختلفة' 
-                  : 'لاعب خاص عندو كلمة مختلفة او عارف راسو هو الحاج' 
-                }
-                </>
-
+              <div className="font-semibold text-base flex items-center gap-2">لحاج</div>
+              <div className="text-xs text-muted-foreground min-h-[1.1rem]">
+                {l7ajEnabled ? (
+                  hideL7aj
+                    ? 'لاعب خاص ماعارفش أنه عندو كلمة مختلفة'
+                    : 'لاعب خاص عندو كلمة مختلفة او عارف راسو هو الحاج'
+                ) : (
+                  'دور اختياري: لاعب بكلمة مختلفة'
                 )}
               </div>
             </div>
@@ -312,7 +297,7 @@ export default function Setup() {
                 onClick={() => setHideL7aj(!hideL7aj)}
                 aria-label="تفعيل إخفاء لحاج"
                 aria-pressed={hideL7aj}
-                className={`relative overflow-hidden h-7 rounded-full flex items-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm
+                className={`relative overflow-hidden h-8 rounded-full flex items-center justify-center gap-1.5 px-3 text-[11px] font-medium transition-all border backdrop-blur-sm
                   ${hideL7aj
                     ? 'bg-gradient-to-r from-rose-500/90 to-red-600 text-white border-red-400/60 shadow-sm ring-1 ring-white/20'
                     : 'bg-white/5 hover:bg-white/10 text-red-400 border-red-400/30'}
@@ -324,9 +309,7 @@ export default function Setup() {
                 ) : (
                   <Eye className="w-3.5 h-3.5 opacity-80" />
                 )}
-                <span className="flex items-center gap-1">
-                  {hideL7aj ? 'مخفي' : 'إخفاء'}
-                </span>
+                <span className="flex items-center gap-1">{hideL7aj ? 'مخفي' : 'إخفاء'}</span>
                 {hideL7aj && (
                   <span className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_30%_30%,#ffffff33,transparent_60%)]" />
                 )}
@@ -346,7 +329,7 @@ export default function Setup() {
             </div>
             <div>
               <div className="font-semibold text-base">لمصيدة</div>
-              <div className="text-xs text-muted-foreground">فشي جولات معينة كولشي يقدر يولي إمبوستر</div>
+              <div className="text-xs text-muted-foreground pl-3">فشي جولات معينة كولشي يقدر يولي إمبوستر</div>
             </div>
           </div>
           <Switch checked={trapEnabled} onCheckedChange={setTrapEnabled} className="data-[state=checked]:bg-primary" />

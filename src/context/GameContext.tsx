@@ -25,7 +25,7 @@ interface GameContextType {
   category: string | null;
   secretWord: string;
   hint: string;
-  imposterIndex: number;
+  imposterIndices: number[];
   currentPlayerIndex: number;
   firstPlayerIndex: number;
   imposterCount: number;
@@ -64,7 +64,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [category, setCategory] = useState<string | null>(null);
   const [secretWord, setSecretWord] = useState('');
   const [hint, setHint] = useState('');
-  const [imposterIndex, setImposterIndex] = useState(-1);
+  const [imposterIndices, setImposterIndices] = useState<number[]>([]);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [firstPlayerIndex, setFirstPlayerIndex] = useState(0);
   // imposterCount: 0 = no imposters, >=1 explicit number
@@ -222,18 +222,30 @@ export function GameProvider({ children }: { children: ReactNode }) {
     
     // Use the imposter count directly (no random logic), but if trap is activated, make all players imposters
     const resolvedImpCount = shouldActivateTrap ? playerCount : impCount;
-    const randomImposter = Math.floor(Math.random() * playerCount);
+    
+    // Generate random imposter indices
+    let randomImposters: number[] = [];
+    if (resolvedImpCount > 0) {
+      const availableIndices = Array.from({ length: playerCount }, (_, i) => i);
+      for (let i = 0; i < resolvedImpCount; i++) {
+        if (availableIndices.length === 0) break;
+        const randomIndex = Math.floor(Math.random() * availableIndices.length);
+        const selectedIndex = availableIndices.splice(randomIndex, 1)[0];
+        randomImposters.push(selectedIndex);
+      }
+    }
+    
     let randomL7aj = -1;
     let chosenL7ajWord = '';
     
     // L7aj logic (only if trap is not activated and l7aj is enabled)
     if (l7ajEnabled && !shouldActivateTrap) {
-      // pick a different player index for l7aj
-      randomL7aj = Math.floor(Math.random() * playerCount);
-      let attempts = 0;
-      while (randomL7aj === randomImposter && attempts < 10) {
-        randomL7aj = Math.floor(Math.random() * playerCount);
-        attempts++;
+      // pick a different player index for l7aj that's not an imposter
+      const availableForL7aj = Array.from({ length: playerCount }, (_, i) => i)
+        .filter(i => !randomImposters.includes(i));
+      
+      if (availableForL7aj.length > 0) {
+        randomL7aj = availableForL7aj[Math.floor(Math.random() * availableForL7aj.length)];
       }
 
       // pick the l7aj word from same category but different from secret word
@@ -262,7 +274,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const randomFirstPlayer = Math.floor(Math.random() * playerCount);
     setPlayerCount(playerCount);
     setSelectedCategories(selectedCategories);
-    setImposterIndex(randomImposter);
+    setImposterIndices(randomImposters);
     setL7ajIndex(randomL7aj);
     setL7ajWord(chosenL7ajWord);
     setFirstPlayerIndex(randomFirstPlayer);
@@ -340,7 +352,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setCategory(null);
     setSecretWord('');
     setHint('');
-    setImposterIndex(-1);
+    setImposterIndices([]);
     setCurrentPlayerIndex(0);
     setTrapActivated(false);
     setL7ajIndex(-1);
@@ -430,7 +442,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     category,
     secretWord,
     hint,
-    imposterIndex,
+    imposterIndices,
     currentPlayerIndex,
     firstPlayerIndex,
     imposterCount,

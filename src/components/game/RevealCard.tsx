@@ -16,7 +16,7 @@ export default function RevealCard() {
     secretWord,
     hint,
     category,
-    imposterIndex,
+    imposterIndices,
     imposterCount,
     l7ajIndex,
     l7ajWord,
@@ -35,7 +35,7 @@ export default function RevealCard() {
 
   // if imposterCount is 0 then there are no imposters this round
   // if trap is activated, everyone is an imposter
-  const isImposter = trapActivated || (imposterCount && imposterCount > 0 ? currentPlayerIndex === imposterIndex : false);
+  const isImposter = trapActivated || (imposterCount && imposterCount > 0 ? imposterIndices.includes(currentPlayerIndex) : false);
   const isL7aj = !trapActivated && currentPlayerIndex === l7ajIndex;
   const currentPlayerName = players[currentPlayerIndex] || `اللاعب ${currentPlayerIndex + 1}`;
   const isLastPlayer = currentPlayerIndex === playerCount - 1;
