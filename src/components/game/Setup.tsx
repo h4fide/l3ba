@@ -81,7 +81,7 @@ export default function Setup() {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-xl flex-1 h-11 hover:bg-blue-500/25"
+            className="rounded-xl flex-1 h-11 hover:bg-blue-500/25 border border-white/50"
             onClick={() => setIsEditPlayersOpen(true)}
           >
             <Settings className="w-4 h-4 ml-2" />
@@ -107,9 +107,26 @@ export default function Setup() {
             <p className="text-[0.7rem] text-muted-foreground">فئة</p>
           </div>
         </div>
+        
+        {/* Display selected categories */}
+        {selectedCategories.length > 0 && (
+          <div className="mb-3">
+            <div className="flex flex-wrap gap-2">
+              {selectedCategories.map((category, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-medium border border-primary/30"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        
         <Button
           variant="outline"
-          className="w-full rounded-xl h-12 justify-between group hover:bg-slate-500/45"
+          className="w-full rounded-xl h-12 justify-between group hover:bg-slate-500/45 border border-white/50"
           onClick={() => setIsCategoriesModalOpen(true)}
         >
           <span className="font-medium">
@@ -137,7 +154,7 @@ export default function Setup() {
                   <VenetianMask className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                        <div className="font-semibold text-base">فوضى</div>
+                        <div className="font-semibold text-base">إمبوسترز</div>
                         <div className="text-xs text-muted-foreground">
                           {displayImposterCount === 1 ? 'إمبوستر واحد' : `${displayImposterCount} إمبوسترز`}
                         </div>
@@ -174,7 +191,7 @@ export default function Setup() {
                   <Button
                     key={count}
                     variant={imposterCount === count ? "default" : "outline"}
-                    className="rounded-xl py-8 flex flex-col gap-1"
+                    className="rounded-xl py-8 flex flex-col gap-1 "
                     onClick={() => {
                       setImposterCount(count);
                       setIsImposterSheetOpen(false);
@@ -202,7 +219,7 @@ export default function Setup() {
                   <Lightbulb className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="font-semibold text-base">تلميح الإمبوستر</div>
+                  <div className="font-semibold text-base"> التلميح</div>
                   <div className="text-xs text-muted-foreground">
                     يحصل الإمبوستر على معلومة إضافية
                   </div>
@@ -253,18 +270,18 @@ export default function Setup() {
       )}
 
       {/* Trap Feature - لمصيدة */}
-      <div className="rounded-2xl border border-orange-500/80 bg-gradient-to-br from-orange-500/20 via-orange-600/15 to-red-500/25 p-5 hover:bg-accent/5">
+      <div className="rounded-2xl border p-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-orange-500" />
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Zap className="w-5 h-5 text-primary" />
             </div>
             <div>
               <div className="font-semibold text-base">لمصيدة</div>
               <div className="text-xs text-muted-foreground">فشي جولات معينة كولشي يقدر يولي إمبوستر</div>
             </div>
           </div>
-          <Switch checked={trapEnabled} onCheckedChange={setTrapEnabled} className="data-[state=checked]:bg-orange-500" />
+          <Switch checked={trapEnabled} onCheckedChange={setTrapEnabled} className="data-[state=checked]:bg-primary" />
         </div>
         {trapActivated && (
           <div className="mt-3 p-2 bg-orange-500/20 rounded-lg border border-orange-500/30">
