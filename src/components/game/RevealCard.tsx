@@ -27,7 +27,7 @@ export default function RevealCard() {
   const [holdProgress, setHoldProgress] = useState(0);
   const [isHolding, setIsHolding] = useState(false);
   const holdIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const HOLD_DURATION = 2000; // 2 seconds
+  const HOLD_DURATION = 1500; // 1.5 seconds
 
   // if imposterCount is 0 then there are no imposters this round
   const isImposter = imposterCount && imposterCount > 0 ? currentPlayerIndex === imposterIndex : false;
