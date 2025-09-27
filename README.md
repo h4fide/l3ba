@@ -1,6 +1,8 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/h4fide/l3ba/refs/heads/main/public/icon-512.png" alt="L3BA Logo" width="150" height="150">
+  <img src="https://github.com/user-attachments/assets/9b6a6d79-1810-4730-9f15-d5c5635fdcfe" alt="L3BA Logo" width="150" height="150" style="border-radius: 20%;">
 </div>
-
-## L3BA - Gha l3ba w saf
-L3BA is a mobile-first, installable game built for quick group play.
+<br>
+<div align="center">
+  <h1>L3ba</h1>
+  <p>Gh l3ba w saf, mobile-first, installable game built for quick group play.</p>
+</div>
