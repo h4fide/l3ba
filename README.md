@@ -1,5 +1,13 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/9b6a6d79-1810-4730-9f15-d5c5635fdcfe" alt="L3BA Logo" width="150" height="150" style="border-radius: 20%;">
+  <img src="https://github.com/user-attachments/assets/9b6a6d79-1810-4730-9f15-d5c5635fdcfe" 
+       alt="L3BA Logo" 
+       width="150" 
+       height="150" 
+       style="border-radius:20%;
+              transition:transform 0.3s ease;
+              cursor:pointer;"
+       onmouseover="this.style.transform='scale(0.9)';"
+       onmouseout="this.style.transform='scale(1)';">
 </div>
 <br>
 <div align="center">
