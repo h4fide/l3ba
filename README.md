@@ -1,5 +1,6 @@
-# Firebase Studio
+# L3BA
+<div align="center">
+  <img src="https://raw.githubusercontent.com/h4fide/l3ba/main/public/assets/icon-512.png" alt="L3BA Logo" width="150" height="150">
+gha l3ba 
 
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+## ToDo List
