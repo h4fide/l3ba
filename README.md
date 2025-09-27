@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/9b6a6d79-1810-4730-9f15-d5c5635fdcfe" 
+  <img src="https://github.com/user-attachments/assets/0c752e02-7a6d-4974-b0e4-4656cad4adc4" 
        alt="L3BA Logo" 
        width="150" 
        height="150" 
